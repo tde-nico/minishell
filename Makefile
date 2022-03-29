@@ -50,6 +50,7 @@ leaks: all
 	leaks --atExit -- ./$(NAME)
 
 up:
+	@$(RM) ../$(NAME)_backup
 	@mkdir -p ../$(NAME)_backup
 	@cp -r * ../$(NAME)_backup
 	@echo "[+] Backuped"
