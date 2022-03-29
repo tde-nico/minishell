@@ -1,0 +1,86 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/22 13:40:22 by tde-nico          #+#    #+#             */
+/*   Updated: 2022/03/22 13:40:22 by tde-nico         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+# include "../libft/libft.h"
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <dirent.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+
+# define PROMPT "\033[0;32mminishell>\033[0m "
+
+typedef struct s_shell
+{
+	char	**env;
+	char	*cmd;
+	char	**cmd_list;
+	char	**words;
+	char	*pipe;
+	char	*path;
+	char	*exit_code;
+	char	*mode;
+	int		fix;
+}	t_shell;
+
+void	debug(char *cmd, char **cmd_split, int quotes);
+
+// utils
+int		free_matrix(char **matrix);
+void	free_shell(t_shell *shell, int mod);
+char	*get_line(int fd);
+void	get_pipe_exit(int fd, t_shell *shell);
+char	*get_path(char **env);
+
+// str_utils
+char	*ft_strcdup(const char *src, char c);
+char	*ft_charjoin(char *s1, char s2);
+char	*ft_strndup(const char *src, size_t len);
+
+// signal
+void	handle_sigint(int sig);
+void	handle_sigquit(int sig);
+void	handle_child_sigint(int sig);
+
+// env_handler
+void	init_env(char **envp, char ***env);
+void	replace_env(char **cmd, t_shell *shell);
+
+// cmd_parse
+void	parse_commands(t_shell *shell);
+
+// cmd_split
+char	**split_cmd(char *cmd, int quotes, char *pipe_in);
+
+// echo cd export unset env
+void	echo(t_shell *shell);
+void	cd(t_shell *shell);
+void	export(t_shell *shell);
+void	unset(t_shell *shell);
+void	env(t_shell *shell);
+
+// cmd_process
+int		count_quotes(char *cmd);
+int		process_cmd(char **cmd, t_shell *shell);
+
+// redirections
+int		process_in_mode(t_shell *shell, int *i);
+void	process_out_mode(t_shell *shell, int *i);
+
+#endif

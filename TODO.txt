@@ -1,0 +1,7 @@
+combinazione       ctrl + C  ctrl + \
+fix crash 		< a.c
+unset pwd e poi cahnge dir
+implement AND
+implement OR
+implement parenthesis
+impplement wildcards
