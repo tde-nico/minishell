@@ -44,7 +44,7 @@ int	end_loop(t_shell *shell)
 	return (0);
 }
 
-int	cmds_process_loop(t_shell *shell)
+void	cmds_process_loop(t_shell *shell)
 {
 	int	i;
 
@@ -57,10 +57,9 @@ int	cmds_process_loop(t_shell *shell)
 		ft_printf("exit code: |%s|\n", shell->exit_code);
 		ft_printf("pipe: |%s|\n", shell->pipe);
 		if (!shell->pipe || !ft_strncmp(shell->exit_code, "127", 4))
-			return (1);
+			break ;
 		(shell->fix)++;
 	}
-	return (0);
 }
 
 int	main_loop(t_shell *shell)
@@ -69,6 +68,8 @@ int	main_loop(t_shell *shell)
 	{
 		signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
+		//ft_printf("%s", PROMPT);
+		//shell->cmd = get_line(0);
 		shell->cmd = readline(PROMPT);
 		if (ft_strncmp(shell->cmd, "", 1))
 			add_history(shell->cmd);
@@ -77,7 +78,8 @@ int	main_loop(t_shell *shell)
 		parse_commands(shell);
 		ft_printf("\nmode: -%s-\n", shell->mode);
 		shell->pipe = NULL;
-		if (cmds_process_loop(shell) || end_loop(shell))
+		cmds_process_loop(shell);
+		if (end_loop(shell))
 			break ;
 	}
 	return (0);

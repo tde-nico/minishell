@@ -75,6 +75,13 @@ void	export(t_shell *shell);
 void	unset(t_shell *shell);
 void	env(t_shell *shell);
 
+// ls
+char	**list_dir(char *path);
+void	ls(t_shell *shell);
+
+// bin_process
+void	execute_pipe(t_shell *shell);
+
 // cmd_process
 int		count_quotes(char *cmd);
 int		process_cmd(char **cmd, t_shell *shell);

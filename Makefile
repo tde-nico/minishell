@@ -14,7 +14,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -I $(INCLUDE) -c $< -o $@
 
-$(NAME): $(OBJS) $(BINS_OBJS)
+$(NAME): $(OBJS)
 	@make -s -C libft
 	@echo "[+] libft compiled"
 	@$(CC) $(CFLAGS) -I $(INCLUDE) -L/usr/include -lreadline $(OBJS) $(LIBFT) -o $@

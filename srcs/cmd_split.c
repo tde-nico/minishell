@@ -60,6 +60,8 @@ int	is_builtin(char *cmd)
 		return (1);
 	if (!ft_strncmp(cmd, "pwd", 4))
 		return (1);
+	if (!ft_strncmp(cmd, "ls", 3))
+		return (1);
 	return (0);
 }
 

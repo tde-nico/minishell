@@ -1,58 +1,16 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cmd_process.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/29 13:27:43 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/29 13:27:43 by tde-nico         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   cmd_process.c									  :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: tde-nico <tde-nico@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2022/03/29 13:27:43 by tde-nico		  #+#	#+#			 */
+/*   Updated: 2022/03/29 13:27:43 by tde-nico		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// #####################  cmd execution  #####################
-
-int	execute(int fd, t_shell *shell)
-{
-	int		status;
-
-	status = 0;
-	if (shell->mode[shell->fix] == '|')
-		dup2(fd, 1);
-	if (execve(shell->words[0], shell->words, shell->env))
-		status = 127;
-	write(fd, "\0", 1);
-	free_shell(shell, 1);
-	return (status);
-}
-
-void	execute_pipe(t_shell *shell)
-{
-	int		fd[2];
-	pid_t	pid;
-	int		status;
-
-	pipe(fd);
-	signal(SIGINT, handle_child_sigint);
-	pid = fork();
-	if (pid == -1)
-		exit(1 + 0 * ft_printf("Fork Error\n"));
-	if (!pid)
-	{
-		close(fd[0]);
-		exit(execute(fd[1], shell));
-	}
-	else
-	{
-		close(fd[1]);
-		waitpid(pid, &status, 0);
-		free(shell->exit_code);
-		shell->exit_code = ft_itoa(WEXITSTATUS(status));
-		get_pipe_exit(fd[0], shell);
-	}
-}
 
 // #####################  cmd processing  #####################
 
@@ -80,12 +38,8 @@ int	count_quotes(char *cmd)
 	return (count);
 }
 
-int	process_programs(t_shell *shell)
+int	process_builtins(t_shell *shell)
 {
-	if (!shell->words[0] || !shell->words[0][0])
-		return (1);
-	if (!ft_strncmp(shell->words[0], "exit", 5))
-		return (0);
 	if (!ft_strncmp(shell->words[0], "echo", 5))
 		echo(shell);
 	else if (!ft_strncmp(shell->words[0], "env", 4))
@@ -98,7 +52,20 @@ int	process_programs(t_shell *shell)
 		unset(shell);
 	else if (!ft_strncmp(shell->words[0], "pwd", 4))
 		shell->pipe = ft_charjoin(ft_strdup(shell->path), '\n');
+	else if (!ft_strncmp(shell->words[0], "ls", 3))
+		ls(shell);
 	else
+		return (0);
+	return (1);
+}
+
+int	process_programs(t_shell *shell)
+{
+	if (!shell->words[0] || !shell->words[0][0])
+		return (1);
+	if (!ft_strncmp(shell->words[0], "exit", 5))
+		return (0);
+	if (!process_builtins(shell))
 	{
 		execute_pipe(shell);
 		if (!ft_strncmp(shell->exit_code, "127", 4))
@@ -108,11 +75,130 @@ int	process_programs(t_shell *shell)
 	return (0);
 }
 
+void	wild(t_shell *shell, char **new, char **cmd, int i)
+{
+	int		j;
+	int		k;
+	int		len;
+	char	**tmp_split;
+	char	**list;
+	char	*tmp;
+	int		start;
+	int		end;
+
+	list = list_dir(".");
+	if (ft_strlen(*cmd) == 1)
+	{
+		j = -1;
+		while (list[++j])
+		{
+			i = -1;
+			while (list[j][++i])
+				*new = ft_charjoin(*new, list[j][i]);
+			*new = ft_charjoin(*new, ' ');
+		}
+		return ;
+	}
+	/*
+	j = -1;
+	while (list[++j])
+		ft_printf("|%s|\n", list[j]);
+	*/
+	start = 1;
+	if ((*cmd)[0] == '*')
+		start = 0;
+	end = 1;
+	if ((*cmd)[ft_strlen((*cmd)) - 1] == '*')
+		end = 0;
+	tmp_split = ft_split((*cmd), '*');
+	j = -1;
+	while (list[++j])
+	{
+		k = 0;
+		i = -1;
+		len = ft_strlen(list[j]);
+		while (tmp_split[++i])
+		{
+			if (!tmp_split[i + 1])
+				len++;
+			tmp = ft_strnstr(&(list[j][k]), tmp_split[i], len);
+			if (tmp)
+			{
+				k += ft_strlen(tmp_split[i]) + tmp - &(list[j][k]);
+				ft_printf("%c %d %d\n", list[j][k], k, tmp - &(list[j][k]));
+				if (len == (int)(ft_strlen(list[j]) + 1)
+					&& ((!ft_strncmp(list[j], tmp_split[0],
+						ft_strlen(tmp_split[0])) && start) || !start)
+					&& ((!list[j][k] && end) || !end))
+				{
+					i = -1;
+					while (list[j][++i])
+						*new = ft_charjoin(*new, list[j][i]);
+					*new = ft_charjoin(*new, ' ');
+					break ;
+				}
+			}
+		}
+	}
+	free_matrix(list);
+	free_matrix(tmp_split);
+	(void)shell;
+}
+
+void	replace_wild(char **cmd, t_shell *shell)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+	char	*new;
+
+	i = count_quotes(*cmd);
+	shell->words = split_cmd(*cmd, i, shell->pipe);
+	j = -1;
+	free(*cmd);
+	*cmd = ft_strdup("");
+	while (shell->words[++j])
+	{
+		i = -1;
+		new = ft_strdup("");
+		tmp = ft_strdup("");
+		while (shell->words[j][++i])
+		{
+			if (shell->words[j][i] == '*')
+			{
+				ft_printf("%s\n", shell->words[j]);
+				wild(shell, &new, &shell->words[j], i);
+				break ;
+			}
+			else
+				tmp = ft_charjoin(tmp, shell->words[j][i]);
+		}
+		if (shell->words[j][i] != '*')
+		{
+			i = -1;
+			while (tmp[++i])
+				*cmd = ft_charjoin(*cmd, tmp[i]);
+		}
+		else
+		{
+			i = -1;
+			while (new[++i])
+				*cmd = ft_charjoin(*cmd, new[i]);
+		}
+		*cmd = ft_charjoin(*cmd, ' ');
+		ft_printf("|%d| |%s| |%s|\n", i, *cmd, new);
+		free(tmp);
+		free(new);
+	}
+	free_matrix(shell->words);
+}
+
 int	process_cmd(char **cmd, t_shell *shell)
 {
 	int		quotes_count;
 
 	replace_env(cmd, shell);
+	replace_wild(cmd, shell);
 	quotes_count = count_quotes(*cmd);
 	shell->words = split_cmd(*cmd, quotes_count, shell->pipe);
 	if (shell->pipe)
