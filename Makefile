@@ -57,4 +57,9 @@ up:
 
 backup: up
 
+push:
+	git add .
+	git commit -m "makefile auto commit"
+	git push
+
 .PHONY: all clean fclean re $(NAME)

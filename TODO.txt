@@ -1,7 +1,7 @@
-combinazione       ctrl + C  ctrl + \
-fix crash 		< a.c
-unset pwd e poi cahnge dir
+combinazione       ctrl + C  ctrl + \		# equivalente a    ctrl + D
+fix crash 		< a.c						# fixato
+unset pwd e poi cahnge dir					# fixato
 implement AND
 implement OR
 implement parenthesis
-impplement wildcards
+impplement wildcards						# da testare

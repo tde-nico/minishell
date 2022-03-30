@@ -87,7 +87,14 @@ void	wild(t_shell *shell, char **new, char **cmd, int i)
 	int		end;
 
 	list = list_dir(".");
-	if (ft_strlen(*cmd) == 1)
+	j = -1;
+	i = 1;
+	while ((*cmd)[++j])
+	{
+		if ((*cmd)[j] != '*')
+			i = 0;
+	}
+	if (i)
 	{
 		j = -1;
 		while (list[++j])
@@ -100,11 +107,6 @@ void	wild(t_shell *shell, char **new, char **cmd, int i)
 		free_matrix(list);
 		return ;
 	}
-	/*
-	j = -1;
-	while (list[++j])
-		ft_printf("|%s|\n", list[j]);
-	*/
 	start = 1;
 	if ((*cmd)[0] == '*')
 		start = 0;

@@ -46,7 +46,7 @@ int	get_old_path(t_shell *shell, char **path)
 	return (ft_printf("cd: OLDPWD not set\n"));
 }
 
-void	update_path(t_shell *s, char *p)
+int	update_path(t_shell *s, char *p)
 {
 	int		old_pwd;
 	int		pwd;
@@ -65,8 +65,10 @@ void	update_path(t_shell *s, char *p)
 		else if (!ft_strncmp(s->env[i], "PWD=", 4))
 			pwd = i;
 	}
-	if (pwd == -1 || old_pwd == -1)
-		return ;
+	if (pwd == -1)
+		return (ft_printf("cd: PWD not set\n"));
+	if (old_pwd == -1)
+		return (ft_printf("cd: OLDPWD not set\n"));
 	tmp = s->env[old_pwd];
 	s->env[old_pwd] = ft_strjoin("OLDPWD=", &s->env[pwd][4]);
 	free(tmp);
@@ -77,6 +79,7 @@ void	update_path(t_shell *s, char *p)
 	s->path = ft_strdup(path);
 	free(tmp);
 	free(path);
+	return (0);
 }
 
 int	change_dir(t_shell *shell)
