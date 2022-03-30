@@ -55,6 +55,8 @@ void	update_path(t_shell *s, char *p)
 	int		i;
 
 	i = -1;
+	old_pwd = -1;
+	pwd = -1;
 	path = NULL;
 	while (s->env[++i])
 	{
@@ -63,6 +65,8 @@ void	update_path(t_shell *s, char *p)
 		else if (!ft_strncmp(s->env[i], "PWD=", 4))
 			pwd = i;
 	}
+	if (pwd == -1 || old_pwd == -1)
+		return ;
 	tmp = s->env[old_pwd];
 	s->env[old_pwd] = ft_strjoin("OLDPWD=", &s->env[pwd][4]);
 	free(tmp);

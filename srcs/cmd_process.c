@@ -97,6 +97,7 @@ void	wild(t_shell *shell, char **new, char **cmd, int i)
 				*new = ft_charjoin(*new, list[j][i]);
 			*new = ft_charjoin(*new, ' ');
 		}
+		free_matrix(list);
 		return ;
 	}
 	/*
