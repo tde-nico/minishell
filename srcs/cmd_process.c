@@ -135,8 +135,10 @@ void	wild(t_shell *shell, char **new, char **cmd, int i)
 					&& ((!list[j][k] && end) || !end))
 				{
 					i = -1;
+					*new = ft_charjoin(*new, '\'');
 					while (list[j][++i])
 						*new = ft_charjoin(*new, list[j][i]);
+					*new = ft_charjoin(*new, '\'');
 					*new = ft_charjoin(*new, ' ');
 					break ;
 				}
@@ -169,27 +171,25 @@ void	replace_wild(char **cmd, t_shell *shell)
 		{
 			if (shell->words[j][i] == '*')
 			{
-				ft_printf("%s\n", shell->words[j]);
 				wild(shell, &new, &shell->words[j], i);
 				break ;
 			}
 			else
 				tmp = ft_charjoin(tmp, shell->words[j][i]);
 		}
-		if (shell->words[j][i] != '*')
+		if (shell->words[j][0] && shell->words[j][i] != '*')
 		{
 			i = -1;
 			while (tmp[++i])
 				*cmd = ft_charjoin(*cmd, tmp[i]);
 		}
-		else
+		else if (shell->words[j][0])
 		{
 			i = -1;
 			while (new[++i])
 				*cmd = ft_charjoin(*cmd, new[i]);
 		}
 		*cmd = ft_charjoin(*cmd, ' ');
-		ft_printf("|%d| |%s| |%s|\n", i, *cmd, new);
 		free(tmp);
 		free(new);
 	}

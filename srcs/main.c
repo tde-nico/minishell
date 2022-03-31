@@ -51,12 +51,36 @@ void	cmds_process_loop(t_shell *shell)
 	i = -1;
 	while (shell->cmd_list[++i])
 	{
+		if (shell->fix && shell->mode[shell->fix - 1] == '^'
+			&& !ft_strncmp(shell->exit_code, "0", 2))
+		{
+			(shell->fix)++;
+			continue ;
+		}
 		if (!process_in_mode(shell, &i))
+		{
+			if (shell->mode[shell->fix] == '&'
+				|| shell->mode[shell->fix] == '^')
+			{
+				free(shell->pipe);
+				shell->pipe = ft_strdup("");
+			}
 			process_cmd(&shell->cmd_list[i], shell);
+		}
 		process_out_mode(shell, &i);
+		if (shell->mode[shell->fix] == '^'
+			&& ft_strncmp(shell->exit_code, "0", 2))
+			ft_putstr_fd(shell->pipe, 1);
+		if (shell->mode[shell->fix] == '&')
+		{
+			ft_putstr_fd(shell->pipe, 1);
+			if (ft_strncmp(shell->exit_code, "0", 2))
+				break ;
+		}
 		ft_printf("exit code: |%s|\n", shell->exit_code);
 		ft_printf("pipe: |%s|\n", shell->pipe);
-		if (!shell->pipe || !ft_strncmp(shell->exit_code, "127", 4))
+		if (!shell->pipe || (!ft_strncmp(shell->exit_code, "127", 4)
+			&& shell->mode[shell->fix] != '^'))
 			break ;
 		(shell->fix)++;
 	}

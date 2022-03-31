@@ -48,7 +48,7 @@ int	count_word_len(char *cmd)
 
 int	is_builtin(char *cmd)
 {
-	if (ft_strncmp(cmd, "echo", 5))
+	if (!ft_strncmp(cmd, "echo", 5))
 		return (1);
 	if (!ft_strncmp(cmd, "env", 4))
 		return (1);
@@ -90,6 +90,6 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 	}
 	if (pipe_in && !is_builtin(pieces[0]))
 		pieces[i++] = ft_strdup(pipe_in);
-	pieces[i] = 0;
+	pieces[i] = NULL;
 	return (pieces);
 }
