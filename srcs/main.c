@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-// #####################  debug  #####################
+// #####################  debug  ##################### TO_REMOVE
 
 void	debug(char *cmd, char **cmd_split, int quotes)
 {
@@ -44,6 +44,24 @@ int	end_loop(t_shell *shell)
 	return (0);
 }
 
+void	cmds_process_exetend(t_shell *shell, int *i)
+{
+	if (!process_in_mode(shell, i))
+	{
+		if (shell->mode[shell->fix] == '&'
+			|| shell->mode[shell->fix] == '^')
+		{
+			free(shell->pipe);
+			shell->pipe = ft_strdup("");
+		}
+		process_cmd(&shell->cmd_list[*i], shell);
+	}
+	process_out_mode(shell, i);
+	if (shell->mode[shell->fix] == '^'
+		&& ft_strncmp(shell->exit_code, "0", 2))
+		ft_putstr_fd(shell->pipe, 1);
+}
+
 void	cmds_process_loop(t_shell *shell)
 {
 	int	i;
@@ -57,20 +75,7 @@ void	cmds_process_loop(t_shell *shell)
 			(shell->fix)++;
 			continue ;
 		}
-		if (!process_in_mode(shell, &i))
-		{
-			if (shell->mode[shell->fix] == '&'
-				|| shell->mode[shell->fix] == '^')
-			{
-				free(shell->pipe);
-				shell->pipe = ft_strdup("");
-			}
-			process_cmd(&shell->cmd_list[i], shell);
-		}
-		process_out_mode(shell, &i);
-		if (shell->mode[shell->fix] == '^'
-			&& ft_strncmp(shell->exit_code, "0", 2))
-			ft_putstr_fd(shell->pipe, 1);
+		cmds_process_exetend(shell, &i);
 		if (shell->mode[shell->fix] == '&')
 		{
 			ft_putstr_fd(shell->pipe, 1);
@@ -80,7 +85,7 @@ void	cmds_process_loop(t_shell *shell)
 		ft_printf("exit code: |%s|\n", shell->exit_code);
 		ft_printf("pipe: |%s|\n", shell->pipe);
 		if (!shell->pipe || (!ft_strncmp(shell->exit_code, "127", 4)
-			&& shell->mode[shell->fix] != '^'))
+				&& shell->mode[shell->fix] != '^'))
 			break ;
 		(shell->fix)++;
 	}
@@ -92,11 +97,11 @@ int	main_loop(t_shell *shell)
 	{
 		signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
-		ft_printf("%s", PROMPT);
-		shell->cmd = get_line(0);
-		//shell->cmd = readline(PROMPT);
-		//if (ft_strncmp(shell->cmd, "", 1))
-		//	add_history(shell->cmd);
+		//ft_printf("%s", PROMPT);
+		//shell->cmd = get_line(0);
+		shell->cmd = readline(PROMPT);
+		if (ft_strncmp(shell->cmd, "", 1))
+			add_history(shell->cmd);
 		if (!shell->cmd)
 			return (0 * write(1, "\n", 1));
 		parse_commands(shell);

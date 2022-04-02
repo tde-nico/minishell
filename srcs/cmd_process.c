@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+// #####################  cd  #####################
+
+void	cd(t_shell *shell)
+{
+	shell->pipe = ft_strdup("");
+	free(shell->exit_code);
+	shell->exit_code = ft_itoa(change_dir(shell));
+}
+
 // #####################  cmd processing  #####################
 
 int	count_quotes(char *cmd)
@@ -73,127 +82,6 @@ int	process_programs(t_shell *shell)
 				shell->words[0]);
 	}
 	return (0);
-}
-
-void	wild(t_shell *shell, char **new, char **cmd, int i)
-{
-	int		j;
-	int		k;
-	int		len;
-	char	**tmp_split;
-	char	**list;
-	char	*tmp;
-	int		start;
-	int		end;
-
-	list = list_dir(".");
-	j = -1;
-	i = 1;
-	while ((*cmd)[++j])
-	{
-		if ((*cmd)[j] != '*')
-			i = 0;
-	}
-	if (i)
-	{
-		j = -1;
-		while (list[++j])
-		{
-			i = -1;
-			while (list[j][++i])
-				*new = ft_charjoin(*new, list[j][i]);
-			*new = ft_charjoin(*new, ' ');
-		}
-		free_matrix(list);
-		return ;
-	}
-	start = 1;
-	if ((*cmd)[0] == '*')
-		start = 0;
-	end = 1;
-	if ((*cmd)[ft_strlen((*cmd)) - 1] == '*')
-		end = 0;
-	tmp_split = ft_split((*cmd), '*');
-	j = -1;
-	while (list[++j])
-	{
-		k = 0;
-		i = -1;
-		len = ft_strlen(list[j]);
-		while (tmp_split[++i])
-		{
-			if (!tmp_split[i + 1])
-				len++;
-			tmp = ft_strnstr(&(list[j][k]), tmp_split[i], len);
-			if (tmp)
-			{
-				k += ft_strlen(tmp_split[i]) + tmp - &(list[j][k]);
-				ft_printf("%c %d %d\n", list[j][k], k, tmp - &(list[j][k]));
-				if (len == (int)(ft_strlen(list[j]) + 1)
-					&& ((!ft_strncmp(list[j], tmp_split[0],
-						ft_strlen(tmp_split[0])) && start) || !start)
-					&& ((!list[j][k] && end) || !end))
-				{
-					i = -1;
-					*new = ft_charjoin(*new, '\'');
-					while (list[j][++i])
-						*new = ft_charjoin(*new, list[j][i]);
-					*new = ft_charjoin(*new, '\'');
-					*new = ft_charjoin(*new, ' ');
-					break ;
-				}
-			}
-		}
-	}
-	free_matrix(list);
-	free_matrix(tmp_split);
-	(void)shell;
-}
-
-void	replace_wild(char **cmd, t_shell *shell)
-{
-	int		i;
-	int		j;
-	char	*tmp;
-	char	*new;
-
-	i = count_quotes(*cmd);
-	shell->words = split_cmd(*cmd, i, shell->pipe);
-	j = -1;
-	free(*cmd);
-	*cmd = ft_strdup("");
-	while (shell->words[++j])
-	{
-		i = -1;
-		new = ft_strdup("");
-		tmp = ft_strdup("");
-		while (shell->words[j][++i])
-		{
-			if (shell->words[j][i] == '*')
-			{
-				wild(shell, &new, &shell->words[j], i);
-				break ;
-			}
-			else
-				tmp = ft_charjoin(tmp, shell->words[j][i]);
-		}
-		if (shell->words[j][0] && shell->words[j][i] != '*')
-		{
-			i = -1;
-			while (tmp[++i])
-				*cmd = ft_charjoin(*cmd, tmp[i]);
-		}
-		else if (shell->words[j][0])
-		{
-			i = -1;
-			while (new[++i])
-				*cmd = ft_charjoin(*cmd, new[i]);
-		}
-		*cmd = ft_charjoin(*cmd, ' ');
-		free(tmp);
-		free(new);
-	}
-	free_matrix(shell->words);
 }
 
 int	process_cmd(char **cmd, t_shell *shell)

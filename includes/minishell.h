@@ -37,6 +37,8 @@ typedef struct s_shell
 	char	*exit_code;
 	char	*mode;
 	int		fix;
+	int		i;
+	int		j;
 }	t_shell;
 
 void	debug(char *cmd, char **cmd_split, int quotes);
@@ -70,6 +72,7 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in);
 
 // echo cd export unset env
 void	echo(t_shell *shell);
+int		change_dir(t_shell *shell);
 void	cd(t_shell *shell);
 void	export(t_shell *shell);
 void	unset(t_shell *shell);
@@ -89,5 +92,11 @@ int		process_cmd(char **cmd, t_shell *shell);
 // redirections
 int		process_in_mode(t_shell *shell, int *i);
 void	process_out_mode(t_shell *shell, int *i);
+
+// parse_wildcard
+void	parse_wild(char **new, char **cmd);
+
+// wildcards
+void	replace_wild(char **cmd, t_shell *shell);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 13:48:27 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/29 13:27:30 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/04/02 10:09:18 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	parse_commands(t_shell *shell)
 	qsijc[1] = 0;
 	qsijc[2] = -1;
 	qsijc[3] = -1;
-	qsijc[4] = count_cmd(shell->cmd, 1, 0 ,0);
+	qsijc[4] = count_cmd(shell->cmd, 1, 0, 0);
 	shell->mode[0] = '\0';
 	shell->fix = 0;
 	shell->cmd_list = NULL;
