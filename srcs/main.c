@@ -62,18 +62,51 @@ void	cmds_process_exetend(t_shell *shell, int *i)
 		ft_putstr_fd(shell->pipe, 1);
 }
 
+void	rec_process(t_shell *shell, int *i)
+{
+	/*t_shell	fake;
+
+	fake->cmd = shell*/
+	if (shell->pipe != NULL)
+		free(shell->pipe);
+	shell->pipe = ft_strdup("");
+	(shell->fix)++;
+	//free(shell->exit_code);
+	//shell->exit_code = ft_strdup("0");
+	ft_printf("md: %c |%s|%s|%d\n", shell->mode[shell->fix], shell->pipe, shell->cmd_list[(*i)], *i);
+	(*i)++;
+}
+
 void	cmds_process_loop(t_shell *shell)
 {
 	int	i;
 
 	i = -1;
+	parse_commands(shell);
+	ft_printf("\nmode: -%s-\n", shell->mode);
+	while (shell->cmd_list[++i])
+		ft_printf("\ncmd: -%s-\n", shell->cmd_list[i]);
+	i = -1;
 	while (shell->cmd_list[++i])
 	{
 		if (shell->fix && shell->mode[shell->fix - 1] == '^'
-			&& !ft_strncmp(shell->exit_code, "0", 2))
-		{
-			(shell->fix)++;
+			&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
 			continue ;
+		if (shell->mode[shell->fix] == '(')
+		{
+			rec_process(shell, &i);
+			if (!shell->cmd_list[i])
+				break ;
+		}
+		if (shell->fix && shell->mode[shell->fix] == '^'
+			&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
+			continue ;
+		if (shell->fix && shell->mode[shell->fix - 1] == '('
+			&& shell->mode[shell->fix] == '&')
+		{
+			if (ft_strncmp(shell->exit_code, "0", 2))
+				break ;
+			(shell->fix)++;
 		}
 		cmds_process_exetend(shell, &i);
 		if (shell->mode[shell->fix] == '&')
@@ -95,7 +128,7 @@ int	main_loop(t_shell *shell)
 {
 	while (1)
 	{
-		signal(SIGINT, handle_sigint);
+		//signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
 		//ft_printf("%s", PROMPT);
 		//shell->cmd = get_line(0);
@@ -104,8 +137,6 @@ int	main_loop(t_shell *shell)
 			add_history(shell->cmd);
 		if (!shell->cmd)
 			return (0 * write(1, "\n", 1));
-		parse_commands(shell);
-		ft_printf("\nmode: -%s-\n", shell->mode);
 		shell->pipe = NULL;
 		cmds_process_loop(shell);
 		if (end_loop(shell))
@@ -124,7 +155,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.exit_code = ft_strdup("0");
 	shell.cmd = NULL;
 	shell.path = get_path(shell.env);
-	signal(SIGINT, handle_sigint);
+	//signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
 	main_loop(&shell);
 	free_shell(&shell, 0);

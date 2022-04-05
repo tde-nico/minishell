@@ -6,7 +6,7 @@
 /*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 13:44:13 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/29 13:35:26 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/04/05 13:16:02 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	free_shell(t_shell *shell, int mod)
 		free(shell->cmd);
 		free_matrix(shell->cmd_list);
 		free_matrix(shell->words);
+		free(shell->mode);
 	}
 }
 
