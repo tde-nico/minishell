@@ -32,7 +32,7 @@ int	count_cmd(char *cmd, int *pc)
 				pc[3]++;
 		}
 		else if (cmd[pc[3]] == '&' && cmd[pc[3] + 1] == '&'
-			&& !pc[1] && !pc[2])
+			&& !pc[1] && !pc[2] && !pc[4])
 		{
 			pc[0]++;
 			pc[3]++;
@@ -76,7 +76,7 @@ int	parse_modes(t_shell *shell, int **q)
 
 int	parse_parenthesis(t_shell *shell, int **q)
 {
-	ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
+	//ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
 	if (shell->cmd[(*q)[3]] == '(')
 	{
 		shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
@@ -85,6 +85,8 @@ int	parse_parenthesis(t_shell *shell, int **q)
 	else if (shell->cmd[(*q)[3]] == ')')
 	{
 		(*q)[5]--;
+		(*q)[3]++;
+		return (1);
 	}
 	if ((*q)[5] < 0)
 		ft_printf("Invalid Syntax\n");
@@ -111,14 +113,16 @@ void	parse_commands_loop(t_shell *shell, int **q)
 				if (parse_modes(shell, q))
 					break ;
 			}
+			//ft_printf("|%s|\n", shell->cmd_list[(*q)[2]]);
 			if (!(*q)[0] && !(*q)[1] && ft_strchr("()", shell->cmd[(*q)[3]])
 				&& parse_parenthesis(shell, q))
-				break ;
+				(*q)[3] += count_spaces(&shell->cmd[(*q)[3]]);
 			else
 				shell->cmd_list[(*q)[2]] = ft_charjoin(shell->cmd_list[(*q)[2]],
 						shell->cmd[(*q)[3]++]);
 		}
 	}
+	shell->cmd_list[(*q)[2]] = NULL;
 }
 
 void	parse_commands(t_shell *shell)

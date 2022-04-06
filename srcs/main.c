@@ -32,14 +32,15 @@ void	debug(char *cmd, char **cmd_split, int quotes)
 
 // #####################  main  #####################
 
-int	end_loop(t_shell *shell)
+int	end_loop(t_shell *shell, int mod)
 {
 	free(shell->mode);
 	free(shell->cmd);
 	free_matrix(shell->cmd_list);
 	if (!shell->pipe)
 		return (1);
-	ft_putstr_fd(shell->pipe, 1);
+	if (mod)
+		ft_putstr_fd(shell->pipe, 1);
 	free(shell->pipe);
 	return (0);
 }
@@ -64,29 +65,34 @@ void	cmds_process_exetend(t_shell *shell, int *i)
 
 void	rec_process(t_shell *shell, int *i)
 {
-	/*t_shell	fake;
+	t_shell	fake;
 
-	fake->cmd = shell*/
+	fake.cmd = ft_strdup(shell->cmd_list[(*i)]);
+	fake.exit_code = ft_strdup(shell->exit_code);
+	fake.env = ft_arrdup(shell->env);
+	fake.fix = 0;
+	fake.pipe = NULL;
+	if (shell->pipe != NULL)
+		fake.pipe = ft_strdup(shell->pipe);
+	fake.path = ft_strdup(shell->path);
+	cmds_process_loop(&fake);
 	if (shell->pipe != NULL)
 		free(shell->pipe);
-	shell->pipe = ft_strdup("");
+	shell->pipe = ft_strdup(fake.pipe);
+	free(shell->exit_code);
+	shell->exit_code = ft_strdup(fake.exit_code);
+	free_shell(&fake, 0);
 	(shell->fix)++;
-	//free(shell->exit_code);
-	//shell->exit_code = ft_strdup("0");
-	ft_printf("md: %c |%s|%s|%d\n", shell->mode[shell->fix], shell->pipe, shell->cmd_list[(*i)], *i);
 	(*i)++;
 }
 
-void	cmds_process_loop(t_shell *shell)
+int	cmds_process_loop(t_shell *shell)
 {
 	int	i;
 
 	i = -1;
 	parse_commands(shell);
 	ft_printf("\nmode: -%s-\n", shell->mode);
-	while (shell->cmd_list[++i])
-		ft_printf("\ncmd: -%s-\n", shell->cmd_list[i]);
-	i = -1;
 	while (shell->cmd_list[++i])
 	{
 		if (shell->fix && shell->mode[shell->fix - 1] == '^'
@@ -122,6 +128,9 @@ void	cmds_process_loop(t_shell *shell)
 			break ;
 		(shell->fix)++;
 	}
+	if (shell->mode[shell->fix - 1] == '(')
+		return (end_loop(shell, 0));
+	return (end_loop(shell, 1));
 }
 
 int	main_loop(t_shell *shell)
@@ -130,16 +139,15 @@ int	main_loop(t_shell *shell)
 	{
 		//signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
-		//ft_printf("%s", PROMPT);
-		//shell->cmd = get_line(0);
-		shell->cmd = readline(PROMPT);
-		if (ft_strncmp(shell->cmd, "", 1))
-			add_history(shell->cmd);
+		ft_printf("%s", PROMPT);
+		shell->cmd = get_line(0);
+		//shell->cmd = readline(PROMPT);
+		//if (ft_strncmp(shell->cmd, "", 1))
+		//	add_history(shell->cmd);
 		if (!shell->cmd)
 			return (0 * write(1, "\n", 1));
 		shell->pipe = NULL;
-		cmds_process_loop(shell);
-		if (end_loop(shell))
+		if (cmds_process_loop(shell))
 			break ;
 	}
 	return (0);

@@ -37,29 +37,30 @@ fclean: clean
 re: fclean all
 
 test: all
-	./$(NAME)
+	@./$(NAME)
 
 run: test
 
 var: all
-	valgrind --leak-check=full ./$(NAME)
-
+	@valgrind --leak-check=full ./$(NAME)
 val: var
 
 leaks: all
-	leaks --atExit -- ./$(NAME)
+	@leaks --atExit -- ./$(NAME)
 
 up:
 	@$(RM) ../$(NAME)_backup
 	@mkdir -p ../$(NAME)_backup
 	@cp -r * ../$(NAME)_backup
 	@echo "[+] Backuped"
-
 backup: up
 
 push:
 	git add .
 	git commit -m "makefile auto commit"
 	git push
+tar:
+	@tar -cf ../$(NAME).tar .
+	@echo "[+] Tarred"
 
 .PHONY: all clean fclean re $(NAME)

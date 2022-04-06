@@ -54,6 +54,7 @@ char	*get_path(char **env);
 char	*ft_strcdup(const char *src, char c);
 char	*ft_charjoin(char *s1, char s2);
 char	*ft_strndup(const char *src, size_t len);
+char	**ft_arrdup(char **src);
 
 // signal
 void	handle_sigint(int sig);
@@ -68,6 +69,7 @@ void	replace_env(char **cmd, t_shell *shell);
 void	parse_commands(t_shell *shell);
 
 // cmd_split
+int		count_spaces(char *cmd);
 char	**split_cmd(char *cmd, int quotes, char *pipe_in);
 
 // echo cd export unset env
@@ -98,5 +100,8 @@ void	parse_wild(char **new, char **cmd);
 
 // wildcards
 void	replace_wild(char **cmd, t_shell *shell);
+
+// main
+int	cmds_process_loop(t_shell *shell);
 
 #endif

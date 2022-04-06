@@ -34,10 +34,13 @@ void	free_shell(t_shell *shell, int mod)
 	free(shell->exit_code);
 	if (mod)
 	{
-		free(shell->cmd);
 		free_matrix(shell->cmd_list);
-		free_matrix(shell->words);
 		free(shell->mode);
+		if (mod < 2)
+		{
+			free(shell->cmd);
+			free_matrix(shell->words);
+		}
 	}
 }
 

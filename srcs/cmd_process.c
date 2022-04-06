@@ -92,7 +92,7 @@ int	process_cmd(char **cmd, t_shell *shell)
 	replace_wild(cmd, shell);
 	quotes_count = count_quotes(*cmd);
 	shell->words = split_cmd(*cmd, quotes_count, shell->pipe);
-	if (shell->pipe)
+	if (shell->pipe != NULL)
 		free(shell->pipe);
 	debug(*cmd, shell->words, quotes_count);
 	if (process_programs(shell))

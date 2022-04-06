@@ -62,3 +62,19 @@ char	*ft_strndup(const char *src, size_t len)
 	ft_strlcpy(str, src, len);
 	return (str);
 }
+
+char	**ft_arrdup(char **src)
+{
+	int		i;
+	char	**tmp;
+
+	i = 0;
+	while (src[i])
+		i++;
+	tmp = malloc(sizeof(char *) * (i + 1));
+	i = -1;
+	while (src[++i])
+		tmp[i] = ft_strdup(src[i]);
+	tmp[i] = NULL;
+	return (tmp);
+}
