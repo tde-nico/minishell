@@ -41,7 +41,8 @@ int	end_loop(t_shell *shell, int mod)
 		return (1);
 	if (mod)
 		ft_putstr_fd(shell->pipe, 1);
-	free(shell->pipe);
+	if (!shell->nest)
+		free(shell->pipe);
 	return (0);
 }
 
@@ -67,10 +68,12 @@ void	rec_process(t_shell *shell, int *i)
 {
 	t_shell	fake;
 
+	//ft_printf("\n\tENTER\n");
 	fake.cmd = ft_strdup(shell->cmd_list[(*i)]);
 	fake.exit_code = ft_strdup(shell->exit_code);
 	fake.env = ft_arrdup(shell->env);
 	fake.fix = 0;
+	fake.nest = shell->nest + 1;
 	fake.pipe = NULL;
 	if (shell->pipe != NULL)
 		fake.pipe = ft_strdup(shell->pipe);
@@ -79,11 +82,13 @@ void	rec_process(t_shell *shell, int *i)
 	if (shell->pipe != NULL)
 		free(shell->pipe);
 	shell->pipe = ft_strdup(fake.pipe);
+	//ft_printf("pipe: |%s|%s|\n", fake.pipe, shell->pipe);
 	free(shell->exit_code);
 	shell->exit_code = ft_strdup(fake.exit_code);
 	free_shell(&fake, 0);
 	(shell->fix)++;
-	(*i)++;
+	//(*i)++;
+	//ft_printf("\n\tEXIT\n");
 }
 
 int	cmds_process_loop(t_shell *shell)
@@ -92,32 +97,46 @@ int	cmds_process_loop(t_shell *shell)
 
 	i = -1;
 	parse_commands(shell);
-	ft_printf("\nmode: -%s-\n", shell->mode);
+	ft_printf("mode: -%s-\n", shell->mode);
 	while (shell->cmd_list[++i])
 	{
-		if (shell->fix && shell->mode[shell->fix - 1] == '^'
-			&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
-			continue ;
+		ft_printf("|%s|%d|\n", shell->cmd_list[i], shell->fix);
+		/*if (shell->fix && shell->mode[shell->fix - 1] == '^'
+			&& !ft_strncmp(shell->exit_code, "0", 2))
+		{
+			(shell->fix)++;
+			if (shell->mode[shell->fix - 1] == '^')
+				continue ;
+			if (shell->mode[shell->fix - 1] && shell->mode[shell->fix - 1] != '^')
+				//&& shell->mode[shell->fix] != '&')
+				ft_putstr_fd(shell->pipe, 1);
+			ft_printf("|%s|%d|%s|\n", shell->cmd_list[i], shell->fix, shell->mode);
+			//if (shell->mode[shell->fix] && shell->mode[shell->fix] == '(')
+			//	(shell->fix)++;
+		}*/
 		if (shell->mode[shell->fix] == '(')
 		{
 			rec_process(shell, &i);
-			if (!shell->cmd_list[i])
+			//(shell->fix)++;
+			//continue ;
+			/*if (!shell->cmd_list[i])
 				break ;
+			if (shell->mode[shell->fix] == '^'
+				&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
+				continue ;
+			if (shell->mode[shell->fix] == '&' && (shell->fix)++)
+			{
+				if (ft_strncmp(shell->exit_code, "0", 2))
+					break ;
+			}*/
 		}
-		if (shell->fix && shell->mode[shell->fix] == '^'
-			&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
-			continue ;
-		if (shell->fix && shell->mode[shell->fix - 1] == '('
-			&& shell->mode[shell->fix] == '&')
-		{
-			if (ft_strncmp(shell->exit_code, "0", 2))
-				break ;
-			(shell->fix)++;
-		}
-		cmds_process_exetend(shell, &i);
+		else
+			cmds_process_exetend(shell, &i);
 		if (shell->mode[shell->fix] == '&')
 		{
-			ft_putstr_fd(shell->pipe, 1);
+			//ft_printf("print: |%d|%c|\n", shell->fix, shell->mode[shell->fix - i]);
+			if (!(shell->fix > 0 && shell->mode[shell->fix - 1] == '('))
+				ft_putstr_fd(shell->pipe, 1);
 			if (ft_strncmp(shell->exit_code, "0", 2))
 				break ;
 		}
@@ -126,9 +145,35 @@ int	cmds_process_loop(t_shell *shell)
 		if (!shell->pipe || (!ft_strncmp(shell->exit_code, "127", 4)
 				&& shell->mode[shell->fix] != '^'))
 			break ;
+		if (shell->mode[shell->fix] == '^'
+			&& !ft_strncmp(shell->exit_code, "0", 2))
+		{
+			//ft_printf("print or: |%d|%d|%c|%c|%d|\n", i, shell->fix, shell->mode[shell->fix], shell->mode[shell->fix - 1], shell->mode[shell->fix - 1] == '(');
+			if (!(shell->mode[shell->fix - 1]
+				&& shell->mode[shell->fix - 1] == '('))
+				ft_putstr_fd(shell->pipe, 1);
+			while (ft_strchr("^(<>AC", shell->mode[shell->fix])
+				&& shell->mode[shell->fix++])
+			{
+				if (shell->mode[shell->fix - 1] != '(')
+					i++;
+			}
+			(shell->fix)--;
+			//i--;
+			if (shell->mode[shell->fix + 1] == '(')
+				(shell->fix)++;
+			//ft_printf("post: |%d|%d|\n", i, shell->fix);
+		}
 		(shell->fix)++;
+		//ft_printf("end: |%d|%d|\n", i, shell->fix);
 	}
-	if (shell->mode[shell->fix - 1] == '(')
+	if (shell->fix && !shell->mode[shell->fix - 1])
+		(shell->fix)--;
+	i = 1;
+	while (shell->mode[shell->fix - i] == '^')
+		i++;
+	//ft_printf("print: |%d|%d|%c|\n", i, shell->fix, shell->mode[shell->fix - i]);
+	if (i > 1 || (shell->mode[shell->fix - i] && ft_strchr("(<>AC^", shell->mode[shell->fix - i])))
 		return (end_loop(shell, 0));
 	return (end_loop(shell, 1));
 }
@@ -160,6 +205,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	init_env(envp, &shell.env);
+	shell.nest = 0;
 	shell.exit_code = ft_strdup("0");
 	shell.cmd = NULL;
 	shell.path = get_path(shell.env);

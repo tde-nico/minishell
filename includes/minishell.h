@@ -39,6 +39,7 @@ typedef struct s_shell
 	int		fix;
 	int		i;
 	int		j;
+	int		nest;
 }	t_shell;
 
 void	debug(char *cmd, char **cmd_split, int quotes);
@@ -69,7 +70,7 @@ void	replace_env(char **cmd, t_shell *shell);
 void	parse_commands(t_shell *shell);
 
 // cmd_split
-int		count_spaces(char *cmd);
+int		count_char(char *cmd, char c);
 char	**split_cmd(char *cmd, int quotes, char *pipe_in);
 
 // echo cd export unset env

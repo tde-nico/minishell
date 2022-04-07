@@ -37,10 +37,13 @@ int	count_cmd(char *cmd, int *pc)
 			pc[0]++;
 			pc[3]++;
 		}
+		if (pc[4] < 0)
+			return (-1 + 0 * (ft_printf("Invalid Syntax\n")));
 	}
-	if (pc[4] < 0)
-		return (-1 + 0 * (ft_printf("Invalid Syntax\n")));
-	return (pc[0]);
+	if (!pc[4])
+		return (pc[0]);
+	return (-1 + 0 * (ft_printf("Invalid Syntax\n")));
+	
 }
 
 // echo a || (echo b && echo c) && echo d
@@ -53,7 +56,7 @@ int	parse_modes(t_shell *shell, int **q)
 		&& shell->cmd[(*q)[3] + 1] != '&') || (*q)[5])
 		return (0);
 	shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
-	ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
+	//ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
 	if (shell->cmd[(*q)[3]] == '>'
 		&& shell->cmd[(*q)[3] + 1] == '>')
 		shell->mode[ft_strlen(shell->mode) - 1] += 5 + (0 * (*q)[3]++);
@@ -68,28 +71,23 @@ int	parse_modes(t_shell *shell, int **q)
 		shell->mode[ft_strlen(shell->mode) - 1] = '&' + (0 * (*q)[3]++);
 	return (1);
 }
-/*
-			else if (!(*q)[0] && !(*q)[1]
-				&& ft_strchr("()", shell->cmd[(*q)[3]]))
-				parse_parenthesis(shell, q);
-*/
 
 int	parse_parenthesis(t_shell *shell, int **q)
 {
-	//ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
 	if (shell->cmd[(*q)[3]] == '(')
 	{
-		shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
 		(*q)[5]++;
+		shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
 	}
 	else if (shell->cmd[(*q)[3]] == ')')
 	{
 		(*q)[5]--;
+		if ((*q)[5])
+			return (0);
 		(*q)[3]++;
 		return (1);
+		
 	}
-	if ((*q)[5] < 0)
-		ft_printf("Invalid Syntax\n");
 	(*q)[3]++;
 	return (0);
 }
@@ -113,10 +111,12 @@ void	parse_commands_loop(t_shell *shell, int **q)
 				if (parse_modes(shell, q))
 					break ;
 			}
-			//ft_printf("|%s|\n", shell->cmd_list[(*q)[2]]);
-			if (!(*q)[0] && !(*q)[1] && ft_strchr("()", shell->cmd[(*q)[3]])
+			if (!(*q)[0] && !(*q)[1] && ((!(*q)[5] &&
+				shell->cmd[(*q)[3]] == '(') || shell->cmd[(*q)[3]] == ')')
 				&& parse_parenthesis(shell, q))
-				(*q)[3] += count_spaces(&shell->cmd[(*q)[3]]);
+				(*q)[3] += count_char(&shell->cmd[(*q)[3] + count_char(
+					&shell->cmd[(*q)[3]], ')')], ' ');// + count_char(
+					//&shell->cmd[(*q)[3]], ')');
 			else
 				shell->cmd_list[(*q)[2]] = ft_charjoin(shell->cmd_list[(*q)[2]],
 						shell->cmd[(*q)[3]++]);

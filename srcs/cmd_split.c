@@ -14,13 +14,13 @@
 
 // #####################  cmd words parse  #####################
 
-int	count_spaces(char *cmd)
+int	count_char(char *cmd, char c)
 {
 	int	i;
 
 	i = -1;
 	while (cmd[++i])
-		if (!(cmd[i] == ' '))
+		if (!(cmd[i] == c))
 			break ;
 	return (i);
 }
@@ -79,7 +79,7 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 	j = 0;
 	while (++i < quotes)
 	{
-		j += count_spaces(&cmd[j]);
+		j += count_char(&cmd[j], ' ');
 		word_len = count_word_len(&cmd[j]);
 		if ((cmd[j] == '"' && cmd[j + word_len - 1] == '"')
 			|| (cmd[j] == '\'' && cmd[j + word_len - 1] == '\''))

@@ -88,6 +88,7 @@ int	process_cmd(char **cmd, t_shell *shell)
 {
 	int		quotes_count;
 
+	//ft_printf("pipe: |%s|\n", shell->pipe);
 	replace_env(cmd, shell);
 	replace_wild(cmd, shell);
 	quotes_count = count_quotes(*cmd);
