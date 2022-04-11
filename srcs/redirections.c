@@ -67,7 +67,7 @@ int	process_in_mode(t_shell *shell, int *i)
 {
 	int		quotes;
 
-	if (ft_strchr("|>C&^()", shell->mode[shell->fix]))
+	if (ft_strchr("|>C&^(", shell->mode[shell->fix]))
 		return (0);
 	replace_env(&shell->cmd_list[*i + 1], shell);
 	quotes = count_quotes(shell->cmd_list[*i + 1]);
@@ -89,7 +89,7 @@ void	process_out_mode(t_shell *shell, int *i)
 
 	if ((shell->fix - 1) >= 0 && ft_strchr("<A", shell->mode[shell->fix - 1]))
 		(*i)++;
-	if (!shell->pipe || ft_strchr("|&^()", shell->mode[shell->fix]))
+	if (!shell->pipe || ft_strchr("|&^(", shell->mode[shell->fix]))
 		return ;
 	replace_env(&shell->cmd_list[*i + 1], shell);
 	quotes = count_quotes(shell->cmd_list[*i + 1]);

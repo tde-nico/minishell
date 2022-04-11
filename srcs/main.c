@@ -34,12 +34,14 @@ void	debug(char *cmd, char **cmd_split, int quotes)
 
 int	end_loop(t_shell *shell, int mod)
 {
+	if (mod == 2)
+		shell->pipe = ft_strdup("");
 	free(shell->mode);
 	free(shell->cmd);
 	free_matrix(shell->cmd_list);
 	if (!shell->pipe)
 		return (1);
-	if (mod)
+	if (mod == 1)
 		ft_putstr_fd(shell->pipe, 1);
 	if (!shell->nest)
 		free(shell->pipe);
@@ -68,7 +70,7 @@ void	rec_process(t_shell *shell, int *i)
 {
 	t_shell	fake;
 
-	//ft_printf("\n\tENTER\n");
+	ft_printf("\n\tENTER\n");
 	fake.cmd = ft_strdup(shell->cmd_list[(*i)]);
 	fake.exit_code = ft_strdup(shell->exit_code);
 	fake.env = ft_arrdup(shell->env);
@@ -85,10 +87,10 @@ void	rec_process(t_shell *shell, int *i)
 	//ft_printf("pipe: |%s|%s|\n", fake.pipe, shell->pipe);
 	free(shell->exit_code);
 	shell->exit_code = ft_strdup(fake.exit_code);
-	free_shell(&fake, 0);
+	free_shell(&fake, 2);
 	(shell->fix)++;
 	//(*i)++;
-	//ft_printf("\n\tEXIT\n");
+	ft_printf("\n\tEXIT\n");
 }
 
 int	cmds_process_loop(t_shell *shell)
@@ -96,46 +98,19 @@ int	cmds_process_loop(t_shell *shell)
 	int	i;
 
 	i = -1;
-	parse_commands(shell);
+	if (parse_commands(shell))
+		return (end_loop(shell, 2));
 	ft_printf("mode: -%s-\n", shell->mode);
 	while (shell->cmd_list[++i])
 	{
 		ft_printf("|%s|%d|\n", shell->cmd_list[i], shell->fix);
-		/*if (shell->fix && shell->mode[shell->fix - 1] == '^'
-			&& !ft_strncmp(shell->exit_code, "0", 2))
-		{
-			(shell->fix)++;
-			if (shell->mode[shell->fix - 1] == '^')
-				continue ;
-			if (shell->mode[shell->fix - 1] && shell->mode[shell->fix - 1] != '^')
-				//&& shell->mode[shell->fix] != '&')
-				ft_putstr_fd(shell->pipe, 1);
-			ft_printf("|%s|%d|%s|\n", shell->cmd_list[i], shell->fix, shell->mode);
-			//if (shell->mode[shell->fix] && shell->mode[shell->fix] == '(')
-			//	(shell->fix)++;
-		}*/
 		if (shell->mode[shell->fix] == '(')
-		{
 			rec_process(shell, &i);
-			//(shell->fix)++;
-			//continue ;
-			/*if (!shell->cmd_list[i])
-				break ;
-			if (shell->mode[shell->fix] == '^'
-				&& !ft_strncmp(shell->exit_code, "0", 2) && (shell->fix)++)
-				continue ;
-			if (shell->mode[shell->fix] == '&' && (shell->fix)++)
-			{
-				if (ft_strncmp(shell->exit_code, "0", 2))
-					break ;
-			}*/
-		}
 		else
 			cmds_process_exetend(shell, &i);
 		if (shell->mode[shell->fix] == '&')
 		{
-			//ft_printf("print: |%d|%c|\n", shell->fix, shell->mode[shell->fix - i]);
-			if (!(shell->fix > 0 && shell->mode[shell->fix - 1] == '('))
+			if (!(shell->fix > 0 && ft_strchr("(<>AC", shell->mode[shell->fix - 1])))
 				ft_putstr_fd(shell->pipe, 1);
 			if (ft_strncmp(shell->exit_code, "0", 2))
 				break ;
@@ -148,7 +123,6 @@ int	cmds_process_loop(t_shell *shell)
 		if (shell->mode[shell->fix] == '^'
 			&& !ft_strncmp(shell->exit_code, "0", 2))
 		{
-			//ft_printf("print or: |%d|%d|%c|%c|%d|\n", i, shell->fix, shell->mode[shell->fix], shell->mode[shell->fix - 1], shell->mode[shell->fix - 1] == '(');
 			if (!(shell->mode[shell->fix - 1]
 				&& shell->mode[shell->fix - 1] == '('))
 				ft_putstr_fd(shell->pipe, 1);
@@ -159,21 +133,18 @@ int	cmds_process_loop(t_shell *shell)
 					i++;
 			}
 			(shell->fix)--;
-			//i--;
 			if (shell->mode[shell->fix + 1] == '(')
 				(shell->fix)++;
-			//ft_printf("post: |%d|%d|\n", i, shell->fix);
 		}
 		(shell->fix)++;
-		//ft_printf("end: |%d|%d|\n", i, shell->fix);
 	}
 	if (shell->fix && !shell->mode[shell->fix - 1])
 		(shell->fix)--;
 	i = 1;
 	while (shell->mode[shell->fix - i] == '^')
 		i++;
-	//ft_printf("print: |%d|%d|%c|\n", i, shell->fix, shell->mode[shell->fix - i]);
-	if (i > 1 || (shell->mode[shell->fix - i] && ft_strchr("(<>AC^", shell->mode[shell->fix - i])))
+	if (i > 1 || (shell->mode[shell->fix - i]
+		&& ft_strchr("(<>AC^", shell->mode[shell->fix - i])))
 		return (end_loop(shell, 0));
 	return (end_loop(shell, 1));
 }
@@ -210,7 +181,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.cmd = NULL;
 	shell.path = get_path(shell.env);
 	//signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, handle_sigquit);
+	//signal(SIGQUIT, handle_sigquit);
 	main_loop(&shell);
 	free_shell(&shell, 0);
 	ft_printf("\33[0;33mlogout\33[0m\n");

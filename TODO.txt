@@ -1,8 +1,2 @@
-combinazione       ctrl + C  ctrl + \		# equivalente a    ctrl + D
-fix crash 		< a.c						# fixato
-unset pwd e poi cahnge dir					# fixato
-implement AND								# added
-implement OR								# added
-implement parenthesis
-impplement wildcards						# da testare ( + 3 fix apportati )
-
+test and bug fix
+norminette

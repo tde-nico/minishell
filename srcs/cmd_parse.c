@@ -37,18 +37,14 @@ int	count_cmd(char *cmd, int *pc)
 			pc[0]++;
 			pc[3]++;
 		}
+		ft_printf("%d\n", pc[4]);
 		if (pc[4] < 0)
-			return (-1 + 0 * (ft_printf("Invalid Syntax\n")));
+			return (-1 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));
 	}
 	if (!pc[4])
 		return (pc[0]);
-	return (-1 + 0 * (ft_printf("Invalid Syntax\n")));
-	
+	return (-1 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));	
 }
-
-// echo a || (echo b && echo c) && echo d
-// a
-// d
 
 int	parse_modes(t_shell *shell, int **q)
 {
@@ -56,7 +52,6 @@ int	parse_modes(t_shell *shell, int **q)
 		&& shell->cmd[(*q)[3] + 1] != '&') || (*q)[5])
 		return (0);
 	shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
-	//ft_printf("i: %d |%s|\n", (*q)[3], shell->mode);
 	if (shell->cmd[(*q)[3]] == '>'
 		&& shell->cmd[(*q)[3] + 1] == '>')
 		shell->mode[ft_strlen(shell->mode) - 1] += 5 + (0 * (*q)[3]++);
@@ -74,21 +69,36 @@ int	parse_modes(t_shell *shell, int **q)
 
 int	parse_parenthesis(t_shell *shell, int **q)
 {
+	ft_printf("(*q)[3]): %d %c\n", (*q)[3], shell->cmd[(*q)[3]]);
 	if (shell->cmd[(*q)[3]] == '(')
 	{
+		if (!(*q)[5])
+		{
+			shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
+			//(*q)[3]++;
+		}
+		ft_printf("ft: %d", (*q)[5]);
 		(*q)[5]++;
-		shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
+		ft_printf(" %d %d\n", (*q)[5], (*q)[3]);
+		(*q)[3]++;
 	}
 	else if (shell->cmd[(*q)[3]] == ')')
 	{
+		//if ((*q)[5] > 0)
+		//	shell->mode = ft_charjoin(shell->mode, shell->cmd[(*q)[3]]);
+		ft_printf("q5: %d\n", (*q)[5]);
 		(*q)[5]--;
-		if ((*q)[5])
-			return (0);
 		(*q)[3]++;
+		if ((*q)[5] > 0)
+			return (0);
+		//(*q)[3]++;
+		//shell->cmd_list[(*q)[2]] = ft_charjoin(shell->cmd_list[(*q)[2]],
+		//	shell->cmd[(*q)[3]]);
+		
+		//ft_printf("%d\n", (*q)[5]);
 		return (1);
 		
 	}
-	(*q)[3]++;
 	return (0);
 }
 
@@ -97,6 +107,7 @@ void	parse_commands_loop(t_shell *shell, int **q)
 	while (++(*q)[2] < (*q)[4])
 	{
 		(*q)[3]++;
+		//ft_printf("d: %c %d\n", shell->cmd[(*q)[3]], (*q)[3]);
 		shell->cmd_list[(*q)[2]] = malloc(sizeof(char) * 1);
 		shell->cmd_list[(*q)[2]][0] = 0;
 		while (shell->cmd[(*q)[3]])
@@ -111,27 +122,32 @@ void	parse_commands_loop(t_shell *shell, int **q)
 				if (parse_modes(shell, q))
 					break ;
 			}
-			if (!(*q)[0] && !(*q)[1] && ((!(*q)[5] &&
-				shell->cmd[(*q)[3]] == '(') || shell->cmd[(*q)[3]] == ')')
-				&& parse_parenthesis(shell, q))
-				(*q)[3] += count_char(&shell->cmd[(*q)[3] + count_char(
-					&shell->cmd[(*q)[3]], ')')], ' ');// + count_char(
-					//&shell->cmd[(*q)[3]], ')');
+			//ft_printf("%c %d %d\n", shell->cmd[(*q)[3]], (*q)[5], (*q)[3]);
+			ft_printf("%c %d\n", shell->cmd[(*q)[3]], (*q)[3]);
+			if (!(*q)[0] && !(*q)[1]
+				&& (shell->cmd[(*q)[3]] == '(' || shell->cmd[(*q)[3]] == ')'))
+			{
+				if (parse_parenthesis(shell, q))
+					(*q)[3] += count_char(&shell->cmd[(*q)[3]], ' '); //+ count_char(&shell->cmd[(*q)[3]], ')')]
+					// + count_char(&shell->cmd[(*q)[3]], ')');
+			}
 			else
 				shell->cmd_list[(*q)[2]] = ft_charjoin(shell->cmd_list[(*q)[2]],
 						shell->cmd[(*q)[3]++]);
+			//ft_printf("%s\n", shell->cmd_list[(*q)[2]]);
 		}
+		//ft_printf("%s\n", shell->cmd_list[(*q)[2]]);
 	}
 	shell->cmd_list[(*q)[2]] = NULL;
 }
 
-void	parse_commands(t_shell *shell)
+int	parse_commands(t_shell *shell)
 {
 	int	qsijc[7];
 	int	cqdip[5];
 	int	*p;
 
-	shell->mode = malloc(sizeof(char) * 1);
+	shell->mode = ft_strdup("");
 	qsijc[0] = 0;
 	qsijc[1] = 0;
 	qsijc[2] = -1;
@@ -148,9 +164,9 @@ void	parse_commands(t_shell *shell)
 	shell->cmd_list = NULL;
 	shell->cmd_list = malloc(sizeof(char *) * (qsijc[4] + 1));
 	if (!shell->cmd_list || !shell->mode || qsijc[4] == -1)
-		return ;
-	shell->mode[0] = '\0';
+		return (1);
 	p = &qsijc[0];
 	parse_commands_loop(shell, &(p));
 	shell->cmd_list[qsijc[2]] = 0;
+	return (0);
 }

@@ -78,3 +78,12 @@ char	**ft_arrdup(char **src)
 	tmp[i] = NULL;
 	return (tmp);
 }
+
+void	ft_strappend(char **dst, char *to_append)
+{
+	int	i;
+
+	i = -1;
+	while (to_append[++i])
+		*dst = ft_charjoin(*dst, to_append[i]);
+}

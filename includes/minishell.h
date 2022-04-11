@@ -56,6 +56,7 @@ char	*ft_strcdup(const char *src, char c);
 char	*ft_charjoin(char *s1, char s2);
 char	*ft_strndup(const char *src, size_t len);
 char	**ft_arrdup(char **src);
+void	ft_strappend(char **dst, char *to_append);
 
 // signal
 void	handle_sigint(int sig);
@@ -67,7 +68,7 @@ void	init_env(char **envp, char ***env);
 void	replace_env(char **cmd, t_shell *shell);
 
 // cmd_parse
-void	parse_commands(t_shell *shell);
+int	parse_commands(t_shell *shell);
 
 // cmd_split
 int		count_char(char *cmd, char c);

@@ -32,16 +32,15 @@ void	free_shell(t_shell *shell, int mod)
 	free_matrix(shell->env);
 	free(shell->path);
 	free(shell->exit_code);
-	if (mod)
+	if (mod == 1)
 	{
 		free_matrix(shell->cmd_list);
 		free(shell->mode);
-		if (mod < 2)
-		{
-			free(shell->cmd);
-			free_matrix(shell->words);
-		}
+		free(shell->cmd);
+		free_matrix(shell->words);
 	}
+	else if (mod == 2)
+		free(shell->pipe);
 }
 
 // #####################  readline  #####################
