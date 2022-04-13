@@ -1,2 +1,2 @@
-test and bug fix
-norminette
+test everything
+remove debug prints and function

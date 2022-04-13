@@ -6,7 +6,7 @@
 /*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 10:11:34 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/04/02 11:15:15 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/04/13 11:46:13 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	replace_wild(char **cmd, t_shell *shell)
 	char	*tmp;
 	char	*new;
 
-	shell->words = split_cmd(*cmd, count_quotes(*cmd), shell->pipe);
+	shell->words = split_cmd(*cmd, count_quotes(*cmd), NULL);
 	shell->j = -1;
 	free(*cmd);
 	*cmd = ft_strdup("");

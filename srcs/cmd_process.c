@@ -88,10 +88,14 @@ int	process_cmd(char **cmd, t_shell *shell)
 {
 	int		quotes_count;
 
-	//ft_printf("pipe: |%s|\n", shell->pipe);
+	ft_printf("pipe: |%s|\n", *cmd);
 	replace_env(cmd, shell);
+	ft_printf("pipe: |%s|\n", *cmd);
 	replace_wild(cmd, shell);
+	ft_printf("pipe: |%s|\n", *cmd);
 	quotes_count = count_quotes(*cmd);
+	ft_printf("pipe: |%s|\n", shell->pipe);
+	ft_printf("cmd: |%s|\n", *cmd);
 	shell->words = split_cmd(*cmd, quotes_count, shell->pipe);
 	if (shell->pipe != NULL)
 		free(shell->pipe);

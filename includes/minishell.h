@@ -68,7 +68,7 @@ void	init_env(char **envp, char ***env);
 void	replace_env(char **cmd, t_shell *shell);
 
 // cmd_parse
-int	parse_commands(t_shell *shell);
+int		parse_commands(t_shell *shell);
 
 // cmd_split
 int		count_char(char *cmd, char c);
@@ -103,7 +103,10 @@ void	parse_wild(char **new, char **cmd);
 // wildcards
 void	replace_wild(char **cmd, t_shell *shell);
 
+// command_process
+int		cmds_process_loop(t_shell *shell);
+
 // main
-int	cmds_process_loop(t_shell *shell);
+int		cmds_process_loop(t_shell *shell);
 
 #endif
