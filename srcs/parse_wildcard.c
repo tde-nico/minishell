@@ -32,7 +32,8 @@ int	only_wild(char **cmd, char ***list, char **new)
 			i = -1;
 			while ((*list)[j][++i])
 				*new = ft_charjoin(*new, (*list)[j][i]);
-			*new = ft_charjoin(*new, ' ');
+			if ((*list)[j + 1])
+				*new = ft_charjoin(*new, ' ');
 		}
 		free_matrix(*list);
 		return (1);

@@ -21,7 +21,6 @@ void	handle_sigint(int sig)
 void	handle_sigquit(int sig)
 {
 	(void)sig;
-	ft_printf("\n%s", PROMPT);
 }
 
 void	handle_child_sigint(int sig)

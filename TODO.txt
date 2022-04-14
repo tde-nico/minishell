@@ -1,2 +1,3 @@
+fix			echo "*" *
 test everything
 remove debug prints and function
