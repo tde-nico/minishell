@@ -75,7 +75,7 @@ int	replace_env_var(char **cmd, char *path, t_shell *shell, int i)
 			break ;
 		}
 	}
-	return (i);
+	return (i - 1);
 }
 
 void	replace_env(char **cmd, t_shell *shell)

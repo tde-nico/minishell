@@ -19,7 +19,7 @@ int	execute(int fd, t_shell *shell)
 	int		status;
 
 	status = 0;
-	if (shell->mode[shell->fix] == '|')
+	if (shell->mode[shell->fix] && ft_strchr("|>C", shell->mode[shell->fix]))
 		dup2(fd, 1);
 	if (execve(shell->words[0], shell->words, shell->env))
 		status = 127;

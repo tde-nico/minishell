@@ -18,27 +18,24 @@ int	only_wild(char **cmd, char ***list, char **new)
 	int	i;
 
 	j = -1;
-	i = 1;
 	while ((*cmd)[++j])
 	{
 		if ((*cmd)[j] != '*')
-			i = 0;
+			return (0);
 	}
-	if (i)
+	j = -1;
+	while ((*list)[++j])
 	{
-		j = -1;
-		while ((*list)[++j])
-		{
-			i = -1;
-			while ((*list)[j][++i])
-				*new = ft_charjoin(*new, (*list)[j][i]);
-			if ((*list)[j + 1])
-				*new = ft_charjoin(*new, ' ');
-		}
-		free_matrix(*list);
-		return (1);
+		i = -1;
+		*new = ft_charjoin(*new, '\'');
+		while ((*list)[j][++i])
+			*new = ft_charjoin(*new, (*list)[j][i]);
+		*new = ft_charjoin(*new, '\'');
+		if ((*list)[j + 1])
+			*new = ft_charjoin(*new, ' ');
 	}
-	return (0);
+	free_matrix(*list);
+	return (1);
 }
 
 void	start_end_wild(int (*jklsei)[6], char **cmd)
@@ -54,10 +51,11 @@ void	start_end_wild(int (*jklsei)[6], char **cmd)
 
 int	tmp_check(char **new, char **ts, char **l, int (*jklsei)[6])
 {
+	ft_printf("%d %s %d\n", ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]), l[(*jklsei)[0]], (*jklsei)[4]);
 	if ((*jklsei)[2] == (int)(ft_strlen(l[(*jklsei)[0]]) + 1)
 		&& ((!ft_strncmp(l[(*jklsei)[0]], ts[0],
 		ft_strlen(ts[0])) && (*jklsei)[3]) || !(*jklsei)[3])
-		&& ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]))
+		&& ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]))	// end bug
 	{
 		(*jklsei)[5] = -1;
 		*new = ft_charjoin(*new, '\'');
@@ -73,20 +71,27 @@ int	tmp_check(char **new, char **ts, char **l, int (*jklsei)[6])
 void	wild_inner(char **new, char **ts, char **l, int (*jklsei)[6])
 {
 	char	*tmp;
+	int		run;
 
 	while (ts[++(*jklsei)[5]])
 	{
+		tmp = &(l[(*jklsei)[0]][(*jklsei)[1]]);
+		run = 1;
 		if (!ts[(*jklsei)[5] + 1])
 			((*jklsei)[2])++;
-		tmp = ft_strnstr(&(l[(*jklsei)[0]][(*jklsei)[1]]),
-				ts[(*jklsei)[5]], (*jklsei)[2]);
-		if (tmp)
+		while (run)
 		{
+			tmp = ft_strnstr(tmp, &ts[(*jklsei)[5]][0], (*jklsei)[2]);
+			if (!tmp)
+				break ;
 			(*jklsei)[1] += ft_strlen(ts[(*jklsei)[5]]) + tmp
 				- &(l[(*jklsei)[0]][(*jklsei)[1]]);
+			tmp += ft_strlen(&ts[(*jklsei)[5]][0]);
 			if (tmp_check(new, ts, l, jklsei))
-				break ;
+				run = 0;
 		}
+		if (!run)
+			break ;
 	}
 }
 

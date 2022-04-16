@@ -32,6 +32,15 @@ void	debug(char *cmd, char **cmd_split, int quotes)
 
 /*
 ((( echo a ) && (echo b && echo c)) || echo d && echo e && ( (( (( echo f) )) )) ) && echo g || echo h && echo i
+
+a
+b
+c
+e
+f
+g
+i
+
 */
 
 // #####################  main  #####################
