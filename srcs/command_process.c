@@ -55,7 +55,6 @@ void	rec_process(t_shell *shell, int *i)
 {
 	t_shell	fake;
 
-	//ft_printf("\n\tENTER\n");
 	fake.cmd = ft_strdup(shell->cmd_list[(*i)]);
 	fake.exit_code = ft_strdup(shell->exit_code);
 	fake.env = ft_arrdup(shell->env);
@@ -73,7 +72,6 @@ void	rec_process(t_shell *shell, int *i)
 	shell->exit_code = ft_strdup(fake.exit_code);
 	free_shell(&fake, 2);
 	(shell->fix)++;
-	//ft_printf("\n\tEXIT\n");
 }
 
 int	parsed_cmd_loop(t_shell *s, int *i)
@@ -85,8 +83,6 @@ int	parsed_cmd_loop(t_shell *s, int *i)
 		if (ft_strncmp(s->exit_code, "0", 2))
 			return (1);
 	}
-	//ft_printf("exit code: |%s|\n", s->exit_code);
-	//ft_printf("pipe: |%s|\n", s->pipe);
 	if (!s->pipe || (!ft_strncmp(s->exit_code, "127", 4)
 			&& s->mode[s->fix] != '^'))
 		return (1);
@@ -112,7 +108,6 @@ int	cmds_process_loop(t_shell *shell)
 	i = -1;
 	if (parse_commands(shell))
 		return (end_loop(shell, 2));
-	//ft_printf("mode: -%s-\n", shell->mode);
 	while (shell->cmd_list[++i])
 	{
 		if (shell->mode[shell->fix] == '(')

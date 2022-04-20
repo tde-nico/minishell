@@ -51,11 +51,10 @@ void	start_end_wild(int (*jklsei)[6], char **cmd)
 
 int	tmp_check(char **new, char **ts, char **l, int (*jklsei)[6])
 {
-	ft_printf("%d %s %d\n", ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]), l[(*jklsei)[0]], (*jklsei)[4]);
 	if ((*jklsei)[2] == (int)(ft_strlen(l[(*jklsei)[0]]) + 1)
 		&& ((!ft_strncmp(l[(*jklsei)[0]], ts[0],
 		ft_strlen(ts[0])) && (*jklsei)[3]) || !(*jklsei)[3])
-		&& ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]))	// end bug
+		&& ((!l[(*jklsei)[0]][(*jklsei)[1]] && (*jklsei)[4]) || !(*jklsei)[4]))
 	{
 		(*jklsei)[5] = -1;
 		*new = ft_charjoin(*new, '\'');

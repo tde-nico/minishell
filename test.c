@@ -24,7 +24,7 @@ int	main(int argc, char **argv)
 	}
 	while (argv[++i])
 	{
-		printf("arg %d : %s\n", i, argv[i]);
+		printf("arg %d : |%s|\n", i, argv[i]);
 	}
 	return (0);
 }

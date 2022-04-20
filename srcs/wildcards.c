@@ -12,13 +12,10 @@
 
 #include "minishell.h"
 
-
-
-int	quotes_check(t_shell *shell)
+char	*get_wild_ptr(t_shell *shell)
 {
-	char	*ptr;
 	int		i;
-	int		qs[2];
+	char	*ptr;
 
 	i = -1;
 	ptr = &shell->cmd[0];
@@ -29,6 +26,16 @@ int	quotes_check(t_shell *shell)
 		ptr += (count_char(ptr, '\'') + count_char(ptr, '"'));
 		ptr += ft_strlen(shell->words[i]);
 	}
+	return (ptr);
+}
+
+int	quotes_check(t_shell *shell)
+{
+	char	*ptr;
+	int		i;
+	int		qs[2];
+
+	ptr = get_wild_ptr(shell);
 	if (!ptr)
 		return (0);
 	qs[0] = 0;
@@ -49,10 +56,33 @@ int	quotes_check(t_shell *shell)
 	return (0);
 }
 
-void	wild_loop(char **cmd, t_shell *shell, char **tmp, char **new)
+void	not_wild_sub(t_shell *shell, char **cmd, char **tmp)
 {
 	int	check;
 
+	if (shell->j)
+	{
+		check = quotes_check(shell);
+		if (check == 2)
+			*cmd = ft_charjoin(*cmd, '\'');
+		else if (check == 1)
+			*cmd = ft_charjoin(*cmd, '"');
+	}
+	shell->i = -1;
+	while ((*tmp)[++(shell->i)])
+		*cmd = ft_charjoin(*cmd, (*tmp)[shell->i]);
+	if (shell->j)
+	{
+		check = quotes_check(shell);
+		if (check == 2)
+			*cmd = ft_charjoin(*cmd, '\'');
+		else if (check == 1)
+			*cmd = ft_charjoin(*cmd, '"');
+	}
+}
+
+void	wild_loop(char **cmd, t_shell *shell, char **tmp, char **new)
+{
 	while (shell->words[shell->j][++(shell->i)])
 	{
 		if (shell->words[shell->j][shell->i] == '*' && quotes_check(shell))
@@ -64,27 +94,7 @@ void	wild_loop(char **cmd, t_shell *shell, char **tmp, char **new)
 			*tmp = ft_charjoin(*tmp, shell->words[shell->j][shell->i]);
 	}
 	if (shell->words[shell->j][0] && shell->words[shell->j][shell->i] != '*')
-	{
-		if (shell->j)
-		{
-			check = quotes_check(shell);
-			if (check == 2)
-				*cmd = ft_charjoin(*cmd, '\'');
-			else if (check == 1)
-				*cmd = ft_charjoin(*cmd, '"');
-		}
-		shell->i = -1;
-		while ((*tmp)[++(shell->i)])
-			*cmd = ft_charjoin(*cmd, (*tmp)[shell->i]);
-		if (shell->j)
-		{
-			check = quotes_check(shell);
-			if (check == 2)
-				*cmd = ft_charjoin(*cmd, '\'');
-			else if (check == 1)
-				*cmd = ft_charjoin(*cmd, '"');
-		}
-	}
+		not_wild_sub(shell, cmd, tmp);
 	else if (shell->words[shell->j][0])
 	{
 		shell->i = -1;

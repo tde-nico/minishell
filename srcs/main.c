@@ -30,34 +30,21 @@ void	debug(char *cmd, char **cmd_split, int quotes)
 	}
 }
 
-/*
-((( echo a ) && (echo b && echo c)) || echo d && echo e && ( (( (( echo f) )) )) ) && echo g || echo h && echo i
-
-a
-b
-c
-e
-f
-g
-i
-
-*/
-
 // #####################  main  #####################
 
 int	main_loop(t_shell *shell)
 {
 	while (1)
 	{
-		//signal(SIGINT, handle_sigint);
+		signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
-		ft_printf("%s", PROMPT);
-		shell->cmd = get_line(0);
-		//shell->cmd = readline(PROMPT);
+		//ft_printf("%s", PROMPT);
+		//shell->cmd = get_line(0);
+		shell->cmd = readline(PROMPT);
 		if (!shell->cmd)
 			return (0 * write(1, "\n", 1));
-		//if (ft_strncmp(shell->cmd, "", 1))
-		//	add_history(shell->cmd);
+		if (ft_strncmp(shell->cmd, "", 1))
+			add_history(shell->cmd);
 		shell->pipe = NULL;
 		if (cmds_process_loop(shell))
 			break ;
