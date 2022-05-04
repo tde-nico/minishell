@@ -6,7 +6,7 @@
 /*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 08:35:46 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/29 17:11:03 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/05/04 10:33:47 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ int	count_word_len(char *cmd)
 
 int	is_builtin(char *cmd)
 {
+	if (cmd == NULL)
+		return (0);
 	if (!ft_strncmp(cmd, "echo", 5))
 		return (1);
 	if (!ft_strncmp(cmd, "env", 4))
@@ -88,7 +90,7 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 			pieces[i] = ft_strndup(&cmd[j], word_len + 1);
 		j += word_len;
 	}
-	if (pipe_in && !is_builtin(pieces[0]))
+	if (pieces[0] != NULL && pipe_in && !is_builtin(pieces[0]))
 		pieces[i++] = ft_strdup(pipe_in);
 	pieces[i] = NULL;
 	return (pieces);

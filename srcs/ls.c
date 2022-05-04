@@ -80,6 +80,7 @@ void	ls(t_shell *shell)
 	if (!list)
 	{
 		ft_printf("ls: cannot access '%s': No such file or directory\n", path);
+		shell->exit_code = ft_strdup("1");
 		return ;
 	}
 	copy_list_dir(list, shell);

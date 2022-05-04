@@ -35,11 +35,11 @@ int	count_cmd(char *cmd, int *pc)
 			&& !pc[1] && !pc[2] && !pc[4])
 			pc[0] += 1 + 0 * (++pc[3]);
 		if (pc[4] < 0)
-			return (-1 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));
+			return (-2 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));
 	}
 	if (!pc[4])
 		return (pc[0]);
-	return (-1 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));
+	return (-2 + 0 * (ft_printf("\33[0;31mInvalid Syntax\33[0m\n")));
 }
 
 int	parse_modes(t_shell *shell, int **q)
@@ -133,7 +133,7 @@ int	parse_commands(t_shell *shell)
 	shell->fix = 0;
 	shell->cmd_list = NULL;
 	shell->cmd_list = malloc(sizeof(char *) * (qsijc[4] + 1));
-	if (!shell->cmd_list || !shell->mode || qsijc[4] == -1)
+	if (!shell->cmd_list || !shell->mode || qsijc[4] == -2)
 		return (1);
 	p = &qsijc[0];
 	parse_commands_loop(shell, &(p));

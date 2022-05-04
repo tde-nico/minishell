@@ -51,29 +51,6 @@ void	cmds_process_exetend(t_shell *shell, int *i)
 		ft_putstr_fd(shell->pipe, 1);
 }
 
-void	rec_process(t_shell *shell, int *i)
-{
-	t_shell	fake;
-
-	fake.cmd = ft_strdup(shell->cmd_list[(*i)]);
-	fake.exit_code = ft_strdup(shell->exit_code);
-	fake.env = ft_arrdup(shell->env);
-	fake.fix = 0;
-	fake.nest = shell->nest + 1;
-	fake.pipe = NULL;
-	if (shell->pipe != NULL)
-		fake.pipe = ft_strdup(shell->pipe);
-	fake.path = ft_strdup(shell->path);
-	cmds_process_loop(&fake);
-	if (shell->pipe != NULL)
-		free(shell->pipe);
-	shell->pipe = ft_strdup(fake.pipe);
-	free(shell->exit_code);
-	shell->exit_code = ft_strdup(fake.exit_code);
-	free_shell(&fake, 2);
-	(shell->fix)++;
-}
-
 int	parsed_cmd_loop(t_shell *s, int *i)
 {
 	if (s->mode[s->fix] == '&')
@@ -101,6 +78,19 @@ int	parsed_cmd_loop(t_shell *s, int *i)
 	return (0);
 }
 
+int	fix_end_loop(t_shell *shell)
+{
+	int	i;
+
+	i = 1;
+	while (shell->mode[shell->fix - i] == '^')
+		i++;
+	if (i > 1 || (shell->mode[shell->fix - i]
+			&& ft_strchr("(<>AC^", shell->mode[shell->fix - i])))
+		return (end_loop(shell, 0));
+	return (end_loop(shell, 1));
+}
+
 int	cmds_process_loop(t_shell *shell)
 {
 	int	i;
@@ -110,6 +100,9 @@ int	cmds_process_loop(t_shell *shell)
 		return (end_loop(shell, 2));
 	while (shell->cmd_list[++i])
 	{
+		//ft_printf("\n");
+		//if (!ft_strncmp(shell->cmd_list[i], "", 1))
+		//	continue ;
 		if (shell->mode[shell->fix] == '(')
 			rec_process(shell, &i);
 		else
@@ -120,11 +113,5 @@ int	cmds_process_loop(t_shell *shell)
 	}
 	if (shell->fix && !shell->mode[shell->fix - 1])
 		(shell->fix)--;
-	i = 1;
-	while (shell->mode[shell->fix - i] == '^')
-		i++;
-	if (i > 1 || (shell->mode[shell->fix - i]
-			&& ft_strchr("(<>AC^", shell->mode[shell->fix - i])))
-		return (end_loop(shell, 0));
-	return (end_loop(shell, 1));
+	return (fix_end_loop(shell));
 }

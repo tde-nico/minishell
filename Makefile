@@ -4,7 +4,7 @@ CFLAGS		= -Wall -Wextra -Werror
 RM			= rm -rf
 LIBFT		= libft/libft.a
 INCLUDE		= includes/
-READLINE	= 
+READLINE	= -L/usr/include -lreadline
 SRC_DIR		= srcs
 OBJ_DIR		= objs
 SRCS		= $(wildcard $(SRC_DIR)/*.c)
@@ -17,7 +17,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 $(NAME): $(OBJS)
 	@make -s -C libft
 	@echo "[+] libft compiled"
-	@$(CC) $(CFLAGS) -I $(INCLUDE) -L/usr/include -lreadline $(OBJS) $(LIBFT) -o $@
+	@$(CC) $(CFLAGS) -I $(INCLUDE) $(READLINE) $(OBJS) $(LIBFT) -o $@
 	@echo "[+] $(NAME) compiled"
 
 all: $(NAME)

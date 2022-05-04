@@ -38,8 +38,6 @@ int	main_loop(t_shell *shell)
 	{
 		signal(SIGINT, handle_sigint);
 		signal(SIGQUIT, handle_sigquit);
-		//ft_printf("%s", PROMPT);
-		//shell->cmd = get_line(0);
 		shell->cmd = readline(PROMPT);
 		if (!shell->cmd)
 			return (0 * write(1, "\n", 1));

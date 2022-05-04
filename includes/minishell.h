@@ -106,6 +106,9 @@ void	replace_wild(char **cmd, t_shell *shell);
 // command_process
 int		cmds_process_loop(t_shell *shell);
 
+//	parenthesis
+void	rec_process(t_shell *shell, int *i);
+
 // main
 int		cmds_process_loop(t_shell *shell);
 

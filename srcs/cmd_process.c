@@ -73,7 +73,12 @@ int	process_programs(t_shell *shell)
 	if (!shell->words[0] || !shell->words[0][0])
 		return (1);
 	if (!ft_strncmp(shell->words[0], "exit", 5))
+	{
+		if (shell->mode[shell->fix] == '|' || (shell->fix > 0
+				&& shell->mode[shell->fix - 1] == '|'))
+			shell->pipe = ft_strdup("");
 		return (0);
+	}
 	if (!process_builtins(shell))
 	{
 		execute_pipe(shell);
