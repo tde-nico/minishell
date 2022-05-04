@@ -100,9 +100,6 @@ int	cmds_process_loop(t_shell *shell)
 		return (end_loop(shell, 2));
 	while (shell->cmd_list[++i])
 	{
-		//ft_printf("\n");
-		//if (!ft_strncmp(shell->cmd_list[i], "", 1))
-		//	continue ;
 		if (shell->mode[shell->fix] == '(')
 			rec_process(shell, &i);
 		else
