@@ -44,14 +44,14 @@ int	quotes_check(t_shell *shell)
 	while ((ptr - shell->cmd - i) > 0)
 	{
 		if ((shell->cmd)[i] == '\'' && !qs[1])
-			qs[0] = (qs[0] + 1) % 2;
+			qs[0] += 1;
 		else if ((shell->cmd)[i] == '"' && !qs[0])
-			qs[1] = (qs[1] + 1) % 2;
+			qs[1] += 1;
 		i++;
 	}
-	if (!qs[0])
+	if (qs[0] && qs[0] % 2 == 0)
 		return (1);
-	if (!qs[1])
+	if (qs[1] && qs[1] % 2 == 0)
 		return (2);
 	return (0);
 }
