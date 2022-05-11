@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bin_process.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ffrau <ffrau@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 09:01:31 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/30 09:02:03 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/05/11 16:09:14 by ffrau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,9 @@ void	execute_pipe(t_shell *shell)
 		close(fd[0]);
 		exit(execute(fd[1], shell));
 	}
-	else
-	{
-		close(fd[1]);
-		waitpid(pid, &status, 0);
-		free(shell->exit_code);
-		shell->exit_code = ft_itoa(WEXITSTATUS(status));
-		get_pipe_exit(fd[0], shell);
-	}
+	waitpid(pid, &status, 0);
+	close(fd[1]);
+	free(shell->exit_code);
+	shell->exit_code = ft_itoa(WEXITSTATUS(status));
+	get_pipe_exit(fd[0], shell);
 }

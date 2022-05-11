@@ -12,14 +12,31 @@
 
 #include "minishell.h"
 
-// #####################  cd  #####################
-
-void	cd(t_shell *shell)
+char	*find_cmd_path(char *cmd, char **env, int i)
 {
-	shell->pipe = ft_strdup("");
-	free(shell->exit_code);
-	shell->exit_code = ft_itoa(change_dir(shell));
+	char	**paths;
+	char	*path;
+
+	while (!ft_strnstr(env[i], "PATH", 4))
+		i++;
+	paths = ft_split(env[i] + 5, ':');
+	i = -1;
+	while (paths[++i])
+	{
+		paths[i] = ft_charjoin(paths[i], '/');
+		path = ft_strjoin(paths[i], cmd);
+		if (!access(path, F_OK))
+		{
+			free_matrix(paths);
+			free(cmd);
+			return (path);
+		}
+		free(path);
+	}
+	free_matrix(paths);
+	return (cmd);
 }
+
 
 // #####################  cmd processing  #####################
 
@@ -54,7 +71,11 @@ int	process_builtins(t_shell *shell)
 	else if (!ft_strncmp(shell->words[0], "env", 4))
 		env(shell);
 	else if (!ft_strncmp(shell->words[0], "cd", 3))
-		cd(shell);
+	{
+		shell->pipe = ft_strdup("");
+		free(shell->exit_code);
+		shell->exit_code = ft_itoa(change_dir(shell));
+	}
 	else if (!ft_strncmp(shell->words[0], "export", 7))
 		export(shell);
 	else if (!ft_strncmp(shell->words[0], "unset", 6))
@@ -81,6 +102,8 @@ int	process_programs(t_shell *shell)
 	}
 	if (!process_builtins(shell))
 	{
+		shell->words[0] = find_cmd_path(ft_strdup(shell->words[0]),
+				shell->env, 0);
 		execute_pipe(shell);
 		if (!ft_strncmp(shell->exit_code, "127", 4))
 			ft_printf("\033[0;31m%s: command not found\033[0m\n",

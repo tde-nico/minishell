@@ -24,7 +24,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define PROMPT "\033[0;32mminishell>\033[0m "
+# define PROMPT "\033[0;35mminishell>\033[0m "
 
 typedef struct s_shell
 {
@@ -42,7 +42,7 @@ typedef struct s_shell
 	int		nest;
 }	t_shell;
 
-void	debug(char *cmd, char **cmd_split, int quotes);
+void	debug(char *cmd, char **cmd_split);
 
 // utils
 int		free_matrix(char **matrix);

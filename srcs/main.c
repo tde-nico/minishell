@@ -14,13 +14,12 @@
 
 // #####################  debug  ##################### TO_REMOVE
 
-void	debug(char *cmd, char **cmd_split, int quotes)
+void	debug(char *cmd, char **cmd_split)
 {
 	int	i;
 
 	i = -1;
 	ft_printf("\ncmd: |%s|\n", cmd);
-	ft_printf("number: %d\n", quotes);
 	while (cmd_split[++i])
 	{
 		if (cmd_split[i][0] == 0)

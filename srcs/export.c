@@ -99,7 +99,9 @@ void	export(t_shell *shell)
 	i = 0;
 	shell->pipe = ft_strdup("");
 	while (shell->words[++i])
+	{
 		export_var(shell, shell->words[i]);
+	}
 	free(shell->exit_code);
 	shell->exit_code = ft_strdup("0");
 }

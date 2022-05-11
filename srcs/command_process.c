@@ -14,6 +14,8 @@
 
 int	end_loop(t_shell *shell, int mod)
 {
+	int	i;
+
 	if (mod == 2)
 		shell->pipe = ft_strdup("");
 	free(shell->cmd);
@@ -23,6 +25,11 @@ int	end_loop(t_shell *shell, int mod)
 		free(shell->mode);
 		return (1);
 	}
+	i = 0;
+	while (shell->mode[i] == '&')
+		i++;
+	if (shell->mode[i] == 0)
+		ft_putstr_fd(shell->pipe, 1);
 	if (mod == 1 && !(shell->mode[shell->fix - 1] == '&'
 			&& !((shell->fix - 1) > 0
 				&& ft_strchr("(<>AC", shell->mode[shell->fix - 2]))))
