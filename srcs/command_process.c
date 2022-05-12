@@ -28,7 +28,7 @@ int	end_loop(t_shell *shell, int mod)
 	i = 0;
 	while (shell->mode[i] == '&')
 		i++;
-	if (shell->mode[i] == 0)
+	if (i > 0 && shell->mode[i] == 0)
 		ft_putstr_fd(shell->pipe, 1);
 	if (mod == 1 && !(shell->mode[shell->fix - 1] == '&'
 			&& !((shell->fix - 1) > 0
@@ -44,6 +44,7 @@ void	cmds_process_exetend(t_shell *shell, int *i)
 {
 	if (!process_in_mode(shell, i))
 	{
+		//ft_printf("%s\n", shell->pipe);
 		if (shell->mode[shell->fix - 1] == '&'
 			|| shell->mode[shell->fix - 1] == '^')
 		{
