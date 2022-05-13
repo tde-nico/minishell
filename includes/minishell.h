@@ -78,6 +78,7 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in);
 void	echo(t_shell *shell);
 int		change_dir(t_shell *shell);
 void	cd(t_shell *shell);
+void	print_sorted_env(t_shell *shell);
 void	export(t_shell *shell);
 void	unset(t_shell *shell);
 void	env(t_shell *shell);
