@@ -17,8 +17,10 @@ char	*find_cmd_path(char *cmd, char **env, int i)
 	char	**paths;
 	char	*path;
 
-	while (!ft_strnstr(env[i], "PATH", 4))
+	while (env[i] && !ft_strnstr(env[i], "PATH", 4))
 		i++;
+	if (!env[i])
+		return (cmd);
 	paths = ft_split(env[i] + 5, ':');
 	i = -1;
 	while (paths[++i])
@@ -82,8 +84,8 @@ int	process_builtins(t_shell *shell)
 		unset(shell);
 	else if (!ft_strncmp(shell->words[0], "pwd", 4))
 		shell->pipe = ft_charjoin(ft_strdup(shell->path), '\n');
-	else if (!ft_strncmp(shell->words[0], "ls", 3))
-		ls(shell);
+	//else if (!ft_strncmp(shell->words[0], "ls", 3))
+	//	ls(shell);
 	else
 		return (0);
 	return (1);

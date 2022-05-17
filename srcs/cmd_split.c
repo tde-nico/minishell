@@ -62,9 +62,28 @@ int	is_builtin(char *cmd)
 		return (1);
 	if (!ft_strncmp(cmd, "pwd", 4))
 		return (1);
-	if (!ft_strncmp(cmd, "ls", 3))
-		return (1);
+	//if (!ft_strncmp(cmd, "ls", 3))
+	//	return (1);
 	return (0);
+}
+
+void	copy_pipeline(char ***pieces, int *i, char *pipe_in)
+{
+	char	**tmp_pipe;
+	int		j;
+
+	if ((*pieces)[0] != NULL && pipe_in && !is_builtin((*pieces)[0]))
+	{
+		j = -1;
+		//tmp_pipe = malloc(sizeof(char *) * ft_strlen(pipe_in));
+		tmp_pipe = ft_split(pipe_in, '\n');
+		while (tmp_pipe[++j])
+		{
+			(*pieces)[(*i)++] = ft_strdup(tmp_pipe[j]);
+		}
+		free_matrix(tmp_pipe);
+	}
+	(*pieces)[*i] = NULL;
 }
 
 char	**split_cmd(char *cmd, int quotes, char *pipe_in)
@@ -74,7 +93,10 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 	int		j;
 	int		word_len;
 
-	pieces = malloc(sizeof(char *) * (quotes + 1 + !(!pipe_in)));
+	i = 0;
+	if (pipe_in)
+		i = ft_strlen(pipe_in);
+	pieces = malloc(sizeof(char *) * (quotes + 1 + i));
 	if (!pieces)
 		return (NULL);
 	i = -1;
@@ -90,8 +112,6 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 			pieces[i] = ft_strndup(&cmd[j], word_len + 1);
 		j += word_len;
 	}
-	if (pieces[0] != NULL && pipe_in && !is_builtin(pieces[0]))
-		pieces[i++] = ft_strdup(pipe_in);
-	pieces[i] = NULL;
+	copy_pipeline(&pieces, &i, pipe_in);
 	return (pieces);
 }

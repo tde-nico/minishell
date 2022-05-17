@@ -17,10 +17,12 @@
 int	execute(int fd, t_shell *shell)
 {
 	int		status;
+	//int		in;
 
 	status = 0;
 	if (shell->mode[shell->fix] && ft_strchr("|>C", shell->mode[shell->fix]))
 		dup2(fd, 1);
+	//dup2(in, 0);
 	if (execve(shell->words[0], shell->words, shell->env))
 		status = 127;
 	write(fd, "\0", 1);
@@ -44,6 +46,7 @@ void	execute_pipe(t_shell *shell)
 		close(fd[0]);
 		exit(execute(fd[1], shell));
 	}
+	//close(fd[1]);
 	waitpid(pid, &status, 0);
 	close(fd[1]);
 	free(shell->exit_code);

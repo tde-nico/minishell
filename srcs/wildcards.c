@@ -53,7 +53,7 @@ int	quotes_check(t_shell *shell)
 		return (1);
 	if (qs[1] && qs[1] % 2 == 0)
 		return (2);
-	return (0);
+	return (1);
 }
 
 void	not_wild_sub(t_shell *shell, char **cmd, char **tmp)
