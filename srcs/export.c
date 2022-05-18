@@ -63,10 +63,7 @@ void	append_value(t_shell *shell, char *name, char *value, int plus)
 		if (!ft_strncmp(shell->env[i], name, len) && shell->env[i][len] == '=')
 		{
 			if (plus)
-			{
-				ft_strappend(&shell->env[i], value);
-				return ;
-			}
+				return (ft_strappend(&shell->env[i], value));
 			tmp = shell->env[i];
 			shell->env[i] = ft_strjoin(name, "=");
 			free(tmp);

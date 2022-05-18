@@ -51,6 +51,8 @@ void	start_end_wild(int (*jklsei)[6], char **cmd)
 
 int	tmp_check(char **new, char **ts, char **l, int (*jklsei)[6])
 {
+	if ((!ts[(*jklsei)[5] + 1] && (*jklsei)[5]))
+		((*jklsei)[2])++;
 	if ((*jklsei)[2] == (int)(ft_strlen(l[(*jklsei)[0]]) + 1)
 		&& ((!ft_strncmp(l[(*jklsei)[0]], ts[0],
 		ft_strlen(ts[0])) && (*jklsei)[3]) || !(*jklsei)[3])
@@ -88,6 +90,8 @@ void	wild_inner(char **new, char **ts, char **l, int (*jklsei)[6])
 			tmp += ft_strlen(&ts[(*jklsei)[5]][0]);
 			if (tmp_check(new, ts, l, jklsei))
 				run = 0;
+			if (ts[(*jklsei)[5] + 1])
+				(*jklsei)[5]++;
 		}
 		if (!run)
 			break ;

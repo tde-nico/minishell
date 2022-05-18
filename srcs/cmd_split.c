@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_split.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ffrau <ffrau@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 08:35:46 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/05/11 11:36:11 by ffrau            ###   ########.fr       */
+/*   Updated: 2022/05/18 09:09:13 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ int	is_builtin(char *cmd)
 		return (1);
 	if (!ft_strncmp(cmd, "pwd", 4))
 		return (1);
-	//if (!ft_strncmp(cmd, "ls", 3))
-	//	return (1);
 	return (0);
 }
 
@@ -75,7 +73,6 @@ void	copy_pipeline(char ***pieces, int *i, char *pipe_in)
 	if ((*pieces)[0] != NULL && pipe_in && !is_builtin((*pieces)[0]))
 	{
 		j = -1;
-		//tmp_pipe = malloc(sizeof(char *) * ft_strlen(pipe_in));
 		tmp_pipe = ft_split(pipe_in, '\n');
 		while (tmp_pipe[++j])
 		{
@@ -97,8 +94,6 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 	if (pipe_in)
 		i = ft_strlen(pipe_in);
 	pieces = malloc(sizeof(char *) * (quotes + 1 + i));
-	if (!pieces)
-		return (NULL);
 	i = -1;
 	j = 0;
 	while (++i < quotes)

@@ -44,7 +44,6 @@ void	cmds_process_exetend(t_shell *shell, int *i)
 {
 	if (!process_in_mode(shell, i))
 	{
-		//ft_printf("pipe: |%s|\n", shell->pipe);
 		if (shell->mode[shell->fix - 1] == '&'
 			|| shell->mode[shell->fix - 1] == '^')
 		{

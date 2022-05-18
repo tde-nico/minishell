@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bin_process.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ffrau <ffrau@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 09:01:31 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/05/11 16:09:14 by ffrau            ###   ########.fr       */
+/*   Updated: 2022/05/18 09:09:52 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,10 @@
 int	execute(int fd, t_shell *shell)
 {
 	int		status;
-	//int		in;
 
 	status = 0;
 	if (shell->mode[shell->fix] && ft_strchr("|>C", shell->mode[shell->fix]))
 		dup2(fd, 1);
-	//dup2(in, 0);
 	if (execve(shell->words[0], shell->words, shell->env))
 		status = 127;
 	write(fd, "\0", 1);
@@ -46,7 +44,6 @@ void	execute_pipe(t_shell *shell)
 		close(fd[0]);
 		exit(execute(fd[1], shell));
 	}
-	//close(fd[1]);
 	waitpid(pid, &status, 0);
 	close(fd[1]);
 	free(shell->exit_code);

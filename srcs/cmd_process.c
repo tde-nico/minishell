@@ -39,7 +39,6 @@ char	*find_cmd_path(char *cmd, char **env, int i)
 	return (cmd);
 }
 
-
 // #####################  cmd processing  #####################
 
 int	count_quotes(char *cmd)
@@ -84,8 +83,6 @@ int	process_builtins(t_shell *shell)
 		unset(shell);
 	else if (!ft_strncmp(shell->words[0], "pwd", 4))
 		shell->pipe = ft_charjoin(ft_strdup(shell->path), '\n');
-	//else if (!ft_strncmp(shell->words[0], "ls", 3))
-	//	ls(shell);
 	else
 		return (0);
 	return (1);
