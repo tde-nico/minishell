@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  cmd parse  #####################
-
 int	count_cmd(char *cmd, int *pc)
 {
 	while (cmd[++pc[3]])

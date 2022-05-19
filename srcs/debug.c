@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  debug  ##################### TO_REMOVE
-
 void	debug_cmd(char *cmd, char **cmd_split)
 {
 	int	i;

@@ -61,4 +61,3 @@ void	unset(t_shell *shell)
 	free(shell->exit_code);
 	shell->exit_code = ft_strdup("0");
 }
-

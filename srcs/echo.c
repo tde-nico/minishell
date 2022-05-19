@@ -57,4 +57,3 @@ void	echo(t_shell *shell)
 	shell->exit_code = ft_strdup("0");
 }
 */
-

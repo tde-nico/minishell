@@ -34,4 +34,3 @@ void	rec_process(t_shell *shell, int *i)
 	free_shell(&fake, 2);
 	(shell->fix)++;
 }
-

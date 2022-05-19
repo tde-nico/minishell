@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  main  #####################
-
 int	main_loop(t_shell *shell)
 {
 	while (1)

@@ -110,4 +110,3 @@ void	process_out_mode(t_shell *shell, int *i)
 	shell->exit_code = ft_strdup("0");
 	shell->pipe = ft_strdup("");
 }
-

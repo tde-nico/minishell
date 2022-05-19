@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  cmd words parse  #####################
-
 int	count_char(char *cmd, char c)
 {
 	int	i;

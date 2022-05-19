@@ -89,4 +89,3 @@ void	ls(t_shell *shell)
 	free_matrix(list);
 	free(path);
 }
-

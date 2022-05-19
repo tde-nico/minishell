@@ -125,4 +125,3 @@ int	process_cmd(char **cmd, t_shell *shell)
 		shell->pipe = ft_strdup("");
 	return (free_matrix(shell->words));
 }
-

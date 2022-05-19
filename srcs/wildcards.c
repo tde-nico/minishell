@@ -109,8 +109,8 @@ void	replace_wild(char **cmd, t_shell *shell)
 	char	*new;
 
 	shell->words = split_cmd(*cmd, count_quotes(*cmd), "\0");
-	shell->j = -1;
 	free(*cmd);
+	shell->j = -1;
 	*cmd = ft_strdup("");
 	while (shell->words[++(shell->j)])
 	{

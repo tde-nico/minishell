@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  cmd execution  #####################
-
 int	execute(t_shell *shell)
 {
 	int		status;
