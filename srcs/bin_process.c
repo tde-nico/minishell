@@ -14,7 +14,18 @@
 
 // #####################  cmd execution  #####################
 
-int	execute(int fd, t_shell *shell)
+int	execute(t_shell *shell)
+{
+	int		status;
+
+	status = 0;
+	if (execve(shell->words[0], shell->words, shell->env))
+		status = 127;
+	free_shell(shell, 1);
+	return (status);
+}
+
+int	execute_p(int fd, t_shell *shell)
 {
 	int		status;
 
@@ -26,6 +37,29 @@ int	execute(int fd, t_shell *shell)
 	write(fd, "\0", 1);
 	free_shell(shell, 1);
 	return (status);
+}
+
+void	pipe_process(t_shell *shell)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	pipe(fd);
+	pid = fork();
+	if (pid == -1)
+		exit(1 + 0 * ft_printf("Fork Error\n"));
+	if (pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], 1);
+		exit(execute(shell));
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], 0);
+		waitpid(pid, NULL, 0);
+	}
 }
 
 void	execute_pipe(t_shell *shell)
@@ -42,7 +76,7 @@ void	execute_pipe(t_shell *shell)
 	if (!pid)
 	{
 		close(fd[0]);
-		exit(execute(fd[1], shell));
+		exit(execute_p(fd[1], shell));
 	}
 	waitpid(pid, &status, 0);
 	close(fd[1]);

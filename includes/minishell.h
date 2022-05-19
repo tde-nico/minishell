@@ -42,8 +42,6 @@ typedef struct s_shell
 	int		nest;
 }	t_shell;
 
-void	debug(char *cmd, char **cmd_split);
-
 // utils
 int		free_matrix(char **matrix);
 void	free_shell(t_shell *shell, int mod);
@@ -62,6 +60,10 @@ void	ft_strappend(char **dst, char *to_append);
 void	handle_sigint(int sig);
 void	handle_sigquit(int sig);
 void	handle_child_sigint(int sig);
+
+// debug
+void	debug_cmd(char *cmd, char **cmd_split);
+int		debug_pipe(t_shell *shell, int verbose);
 
 // env_handler
 void	init_env(char **envp, char ***env);
@@ -88,6 +90,7 @@ char	**list_dir(char *path);
 void	ls(t_shell *shell);
 
 // bin_process
+void	pipe_process(t_shell *shell);
 void	execute_pipe(t_shell *shell);
 
 // cmd_process
@@ -105,6 +108,7 @@ void	parse_wild(char **new, char **cmd);
 void	replace_wild(char **cmd, t_shell *shell);
 
 // command_process
+int		fix_end_loop(t_shell *shell);
 int		cmds_process_loop(t_shell *shell);
 
 //	parenthesis

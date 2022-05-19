@@ -35,3 +35,4 @@ void	handle_child_sigint(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 }
+

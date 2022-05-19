@@ -87,3 +87,4 @@ void	ft_strappend(char **dst, char *to_append)
 	while (to_append[++i])
 		*dst = ft_charjoin(*dst, to_append[i]);
 }
+

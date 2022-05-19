@@ -119,3 +119,4 @@ int	cmds_process_loop(t_shell *shell)
 		(shell->fix)--;
 	return (fix_end_loop(shell));
 }
+

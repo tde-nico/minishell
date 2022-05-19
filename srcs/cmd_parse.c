@@ -137,6 +137,5 @@ int	parse_commands(t_shell *shell)
 		return (1);
 	p = &qsijc[0];
 	parse_commands_loop(shell, &(p));
-	shell->cmd_list[qsijc[2]] = 0;
-	return (0);
+	return (debug_pipe(shell, 0));
 }

@@ -103,3 +103,4 @@ void	replace_env(char **cmd, t_shell *shell)
 	*cmd = ft_strdup(cmd_mod);
 	free(cmd_mod);
 }
+

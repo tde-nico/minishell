@@ -93,7 +93,7 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 	i = 0;
 	if (pipe_in)
 		i = ft_strlen(pipe_in);
-	pieces = malloc(sizeof(char *) * (quotes + 1 + i));
+	pieces = malloc(sizeof(char *) * (quotes + 1));
 	i = -1;
 	j = 0;
 	while (++i < quotes)
@@ -107,6 +107,6 @@ char	**split_cmd(char *cmd, int quotes, char *pipe_in)
 			pieces[i] = ft_strndup(&cmd[j], word_len + 1);
 		j += word_len;
 	}
-	copy_pipeline(&pieces, &i, pipe_in);
+	pieces[i] = NULL;
 	return (pieces);
 }

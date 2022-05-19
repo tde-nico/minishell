@@ -71,3 +71,4 @@ void	print_sorted_env(t_shell *shell)
 	}
 	free(sorted);
 }
+

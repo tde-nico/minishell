@@ -100,3 +100,4 @@ char	*get_path(char **env)
 	}
 	return (path);
 }
+

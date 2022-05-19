@@ -12,23 +12,6 @@
 
 #include "minishell.h"
 
-// #####################  debug  ##################### TO_REMOVE
-
-void	debug(char *cmd, char **cmd_split)
-{
-	int	i;
-
-	i = -1;
-	ft_printf("\ncmd: |%s|\n", cmd);
-	while (cmd_split[++i])
-	{
-		if (cmd_split[i][0] == 0)
-			ft_printf("words: |\\0|\n");
-		else
-			ft_printf("words: |%s|\n", cmd_split[i]);
-	}
-}
-
 // #####################  main  #####################
 
 int	main_loop(t_shell *shell)
