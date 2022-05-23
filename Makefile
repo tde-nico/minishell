@@ -8,10 +8,12 @@ READLINE	= -L/usr/include -lreadline -L$(HOME)/.brew/opt/readline/lib -I$(HOME)/
 SRC_DIR		= srcs
 OBJ_DIR		= objs
 SRCS		= $(wildcard $(SRC_DIR)/*.c)
-OBJS		= $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%, $(SRCS:.c=.o))
+OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+$(OBJ_DIR):
+	mkdir $@
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -I $(INCLUDE) -c $< -o $@
 
 $(NAME): $(OBJS)

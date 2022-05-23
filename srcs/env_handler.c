@@ -78,28 +78,36 @@ int	replace_env_var(char **cmd, char *path, t_shell *shell, int i)
 	return (i - 1);
 }
 
+void	little_free(char **cmd, char *cmd_mod)
+{
+	free(*cmd);
+	*cmd = ft_strdup(cmd_mod);
+	free(cmd_mod);
+}
+
 void	replace_env(char **cmd, t_shell *shell)
 {
 	char	*cmd_mod;
 	int		i;
-	int		quotes;
+	int		quotes[2];
 
 	i = -1;
-	quotes = 0;
+	quotes[0] = 0;
+	quotes[1] = 0;
 	cmd_mod = malloc(sizeof(char) * 2);
 	if (!cmd_mod)
 		return ;
 	ft_bzero(cmd_mod, 2);
 	while ((*cmd)[++i])
 	{
-		if ((*cmd)[i] == '\'')
-			quotes = (quotes + 1) % 2;
-		if ((*cmd)[i] == '$' && !quotes)
+		if ((*cmd)[i] == '\'' && !quotes[1])
+			quotes[0] = (quotes[0] + 1) % 2;
+		if ((*cmd)[i] == '\"')
+			quotes[1] = (quotes[1] + 1) % 2;
+		if ((*cmd)[i] == '$' && !quotes[0])
 			i += replace_env_var(&cmd_mod, &(*cmd)[i], shell, 1);
 		else
 			cmd_mod = ft_charjoin(cmd_mod, (*cmd)[i]);
 	}
-	free(*cmd);
-	*cmd = ft_strdup(cmd_mod);
-	free(cmd_mod);
+	little_free(cmd, cmd_mod);
 }

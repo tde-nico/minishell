@@ -90,6 +90,8 @@ int	process_builtins(t_shell *shell)
 
 int	process_programs(t_shell *shell)
 {
+	char	*tmp;
+
 	if (!shell->words[0] || !shell->words[0][0])
 		return (1);
 	if (!ft_strncmp(shell->words[0], "exit", 5))
@@ -101,8 +103,9 @@ int	process_programs(t_shell *shell)
 	}
 	if (!process_builtins(shell))
 	{
-		shell->words[0] = find_cmd_path(ft_strdup(shell->words[0]),
-				shell->env, 0);
+		tmp = find_cmd_path(ft_strdup(shell->words[0]), shell->env, 0);
+		free(shell->words[0]);
+		shell->words[0] = tmp;
 		execute_pipe(shell);
 		if (!ft_strncmp(shell->exit_code, "127", 4))
 			ft_printf("\033[0;31m%s: command not found\033[0m\n",
@@ -119,9 +122,15 @@ int	process_cmd(char **cmd, t_shell *shell)
 	replace_wild(cmd, shell);
 	quotes_count = count_quotes(*cmd);
 	shell->words = split_cmd(*cmd, quotes_count, shell->pipe);
-	if (shell->pipe != NULL)
-		free(shell->pipe);
-	if (process_programs(shell))
-		shell->pipe = ft_strdup("");
+	if (ft_strnstr(shell->words[0], "cat", ft_strlen(shell->words[0]))
+		&& shell->fix && shell->mode[shell->fix - 1] == 'A')
+		ft_printf("%s", shell->pipe);
+	else
+	{
+		if (shell->pipe != NULL)
+			free(shell->pipe);
+		if (process_programs(shell))
+			shell->pipe = ft_strdup("");
+	}
 	return (free_matrix(shell->words));
 }

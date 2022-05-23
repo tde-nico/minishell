@@ -27,9 +27,42 @@ void	debug_cmd(char *cmd, char **cmd_split)
 	}
 }
 
+/*
 int	debug_pipe(t_shell *shell, int verbose)
 {
-	if (ft_strnstr(shell->cmd, "|", ft_strlen(shell->cmd)))
+	int		i;
+	int		j;
+	t_pipe	*p;
+
+	i = 0;
+	while (shell->cmd_list[i])
+		i++;
+	j = -1;
+	while (shell->mode[++j])
+	{
+		if (shell->mode[j] && ft_strchr("<>AC", shell->mode[j]))
+			i--;
+	}
+	//ft_printf("%d\n", i);
+	while (i--)
+	{
+		p = malloc(sizeof(t_pipe *));
+		if (shell->pipes)
+			shell->pipes->previous = p;
+		p->next = shell->pipes;
+		p->previous = NULL;
+		shell->pipes = p;
+	}
+	(void)verbose;
+	return (0);
+}
+*/
+
+int	debug_pipe(t_shell *shell, int verbose)
+{
+	if ((ft_strnstr(shell->mode, "|", ft_strlen(shell->mode))
+			|| ft_strnstr(shell->mode, "<", ft_strlen(shell->mode)))
+		&& !ft_strnstr(shell->mode, "A", ft_strlen(shell->mode)))
 	{
 		free(shell->exit_code);
 		replace_env(&shell->cmd, shell);
@@ -40,8 +73,6 @@ int	debug_pipe(t_shell *shell, int verbose)
 			ft_printf("\nexit_code: |%s|\n", shell->exit_code);
 			ft_printf("\ncmd: |%s|\n", shell->mode);
 		}
-		ft_printf("\nexit_code: |%s|\n", shell->exit_code);
-		shell->pipe = ft_strdup("");
 		return (1);
 	}
 	return (0);

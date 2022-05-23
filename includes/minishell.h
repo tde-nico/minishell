@@ -26,6 +26,13 @@
 
 # define PROMPT "\033[0;35mminishell>\033[0m "
 
+typedef struct s_pipe
+{
+	int				pipes[2];
+	struct s_pipe	*next;
+	struct s_pipe	*previous;
+}	t_pipe;
+
 typedef struct s_shell
 {
 	char	**env;
@@ -40,6 +47,7 @@ typedef struct s_shell
 	int		i;
 	int		j;
 	int		nest;
+	t_pipe	*pipes;
 }	t_shell;
 
 // utils
@@ -96,6 +104,9 @@ void	execute_pipe(t_shell *shell);
 // cmd_process
 int		count_quotes(char *cmd);
 int		process_cmd(char **cmd, t_shell *shell);
+
+// pipeline
+int		pipeline(t_shell *shell);
 
 // redirections
 int		process_in_mode(t_shell *shell, int *i);

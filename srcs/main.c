@@ -40,6 +40,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.nest = 0;
 	shell.exit_code = ft_strdup("0");
 	shell.cmd = NULL;
+	shell.pipes = NULL;
 	shell.path = get_path(shell.env);
 	main_loop(&shell);
 	free_shell(&shell, 0);
