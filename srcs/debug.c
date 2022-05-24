@@ -27,8 +27,7 @@ void	debug_cmd(char *cmd, char **cmd_split)
 	}
 }
 
-/*
-int	debug_pipe(t_shell *shell, int verbose)
+int	debug_pipe_final(t_shell *shell, int verbose)
 {
 	int		i;
 	int		j;
@@ -43,7 +42,6 @@ int	debug_pipe(t_shell *shell, int verbose)
 		if (shell->mode[j] && ft_strchr("<>AC", shell->mode[j]))
 			i--;
 	}
-	//ft_printf("%d\n", i);
 	while (i--)
 	{
 		p = malloc(sizeof(t_pipe *));
@@ -56,7 +54,6 @@ int	debug_pipe(t_shell *shell, int verbose)
 	(void)verbose;
 	return (0);
 }
-*/
 
 int	debug_pipe(t_shell *shell, int verbose)
 {

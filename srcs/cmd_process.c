@@ -122,7 +122,8 @@ int	process_cmd(char **cmd, t_shell *shell)
 	replace_wild(cmd, shell);
 	quotes_count = count_quotes(*cmd);
 	shell->words = split_cmd(*cmd, quotes_count, shell->pipe);
-	if (ft_strnstr(shell->words[0], "cat", ft_strlen(shell->words[0]))
+	if (shell->words[0]
+		&& ft_strnstr(shell->words[0], "cat", ft_strlen(shell->words[0]))
 		&& shell->fix && shell->mode[shell->fix - 1] == 'A')
 		ft_printf("%s", shell->pipe);
 	else

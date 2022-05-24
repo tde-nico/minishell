@@ -72,6 +72,7 @@ void	handle_child_sigint(int sig);
 // debug
 void	debug_cmd(char *cmd, char **cmd_split);
 int		debug_pipe(t_shell *shell, int verbose);
+int		debug_pipe_final(t_shell *shell, int verbose);
 
 // env_handler
 void	init_env(char **envp, char ***env);
@@ -106,7 +107,7 @@ int		count_quotes(char *cmd);
 int		process_cmd(char **cmd, t_shell *shell);
 
 // pipeline
-int		pipeline(t_shell *shell);
+void	execute_pipeline(t_shell *shell);
 
 // redirections
 int		process_in_mode(t_shell *shell, int *i);
