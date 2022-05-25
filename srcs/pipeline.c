@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirections.c                                     :+:      :+:    :+:   */
+/*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tde-nico <tde-nico@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 13:33:04 by tde-nico          #+#    #+#             */
-/*   Updated: 2022/03/29 13:33:04 by tde-nico         ###   ########.fr       */
+/*   Updated: 2022/05/25 09:22:50 by tde-nico         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	wait_pipe(t_shell *shell, int pipe_open, pid_t pid)
 	shell->pipes = shell->pipes->next;
 }
 
-void	execute_pipe(t_shell *shell)
+void	execute_pipeline(t_shell *shell)
 {
 	pid_t	pid;
 	int		pipe_open;

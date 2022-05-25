@@ -36,6 +36,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+	g_exit_code = 0;
 	init_env(envp, &shell.env);
 	shell.nest = 0;
 	shell.exit_code = ft_strdup("0");

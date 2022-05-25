@@ -26,6 +26,8 @@
 
 # define PROMPT "\033[0;35mminishell>\033[0m "
 
+int	g_exit_code;
+
 typedef struct s_pipe
 {
 	int				pipes[2];
@@ -68,6 +70,7 @@ void	ft_strappend(char **dst, char *to_append);
 void	handle_sigint(int sig);
 void	handle_sigquit(int sig);
 void	handle_child_sigint(int sig);
+void	handle_child_sigquit(int sig);
 
 // debug
 void	debug_cmd(char *cmd, char **cmd_split);

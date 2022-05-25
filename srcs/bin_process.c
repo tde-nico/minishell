@@ -60,13 +60,15 @@ void	pipe_process(t_shell *shell)
 	}
 }
 
-void	execute_pipeline(t_shell *shell)
+void	execute_pipe(t_shell *shell)
 {
 	int		fd[2];
 	pid_t	pid;
 	int		status;
 
+	g_exit_code = 0;
 	pipe(fd);
+	signal(SIGQUIT, handle_child_sigquit);
 	signal(SIGINT, handle_child_sigint);
 	pid = fork();
 	if (pid == -1)
@@ -79,6 +81,9 @@ void	execute_pipeline(t_shell *shell)
 	waitpid(pid, &status, 0);
 	close(fd[1]);
 	free(shell->exit_code);
-	shell->exit_code = ft_itoa(WEXITSTATUS(status));
+	if (!g_exit_code)
+		shell->exit_code = ft_itoa(WEXITSTATUS(status));
+	else
+		shell->exit_code = ft_itoa(g_exit_code);
 	get_pipe_exit(fd[0], shell);
 }

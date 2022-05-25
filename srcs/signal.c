@@ -34,4 +34,12 @@ void	handle_child_sigint(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
+	g_exit_code = 130;
+}
+
+void	handle_child_sigquit(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	g_exit_code = 131;
 }
